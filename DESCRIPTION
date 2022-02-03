@@ -1,12 +1,15 @@
 Package: tidytest
-Title: What the Package Does (One Line, Title Case)
+Title: Tidy Statistical Modeling Tests
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    c(person(given = "Robert", 
+             family = "Lankford",
+             role = c("aut", "cre"),
+             email = "robbylankford@gmail.com"))
+Description: The objective of this package is to streamline the implementation 
+    of statistical tests usually used with statistical models that coheres 
+    with the tidy design framework.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
