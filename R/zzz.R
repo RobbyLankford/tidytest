@@ -1,1 +1,4 @@
-globalVariables(c("method", "statistic", "p.value"))
+globalVariables(
+  c("method", "statistic", "p.value", "residuals", ".resid",
+    "Box.test", "shapiro.test")
+)
