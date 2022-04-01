@@ -34,19 +34,38 @@ devtools::install_github("RobbyLankford/tidytest")
 
 ## Usage
 
-### Stationarity
-
-tidytest currently contains the following stationarity tests:
-
-* Augmented Dickey-Fuller (ADF)
-* Kwiatkowski-Phillips-Schmidt-Shin (KPSS)
-
-```{r example-stationarity, eval=FALSE}
+``` r
+library(dplyr)
+library(parsnip)
 library(tidytest)
 
-set.seed(123)
-x <- runif(n = 1000)
+mod_fit <- parsnip::linear_reg() %>%
+  parsnip::set_engine("lm") %>%
+  parsnip::fit(mpg ~ disp + wt + hp, data = mtcars)
+```
 
-adf_test(x)
-kpss_test(x)
+### Linearity
+
+``` r
+ramsey_reset(mod_fit)
+```
+
+### Independence
+
+``` r
+durbin_watson_test(mod_fit)
+ljung_box_test(mod_fit)
+```
+
+### Normality
+
+``` r
+anderson_darling_test(mod_fit)
+shapiro_wilk_test(mod_fit)
+```
+
+### Equal Variance
+
+``` r
+bruesch_pagan_test(mod_fit)
 ```
