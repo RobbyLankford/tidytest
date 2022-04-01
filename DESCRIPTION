@@ -12,9 +12,14 @@ Description: The objective of this package is to streamline the implementation
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     broom,
-    dplyr (>= 1.0.7),
+    dplyr,
+    ggplot2,
+    lmtest,
     magrittr,
+    nortest,
     tseries
+Suggests: 
+    parsnip
