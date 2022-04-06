@@ -42,11 +42,6 @@ durbin_watson_test.default <- function(object, ...) {
 }
 
 #' @export
-durbin_watson_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
-}
-
-#' @export
 durbin_watson_test.lm <- function(object, alternative = "two.sided", ...,
                                   .alpha = 0.05) {
   object %>%
@@ -112,7 +107,6 @@ ljung_box_test.default <- function(object, ...) {
 ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
   object %>%
     get_residuals() %>%
-    dplyr::pull(.resid) %>%
     Box.test(type = "Ljung-Box", ...) %>%
     tidy_test(
       statistic, p.value,

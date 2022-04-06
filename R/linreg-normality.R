@@ -40,7 +40,6 @@ anderson_darling_test.default <- function(object, ...) {
 anderson_darling_test.lm <- function(object, .alpha = 0.05) {
   object %>%
     get_residuals() %>%
-    dplyr::pull(.resid) %>%
     nortest::ad.test() %>%
     tidy_test(
       statistic, p.value,
@@ -98,7 +97,6 @@ shapiro_wilk_test.default <- function(object, ...) {
 shapiro_wilk_test.lm <- function(object, .alpha = 0.05) {
   object %>%
     get_residuals() %>%
-    dplyr::pull(.resid) %>%
     shapiro.test() %>%
     tidy_test(
       statistic, p.value,

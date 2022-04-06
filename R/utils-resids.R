@@ -4,7 +4,7 @@ get_residuals <- function(object, ...) {
 
 # Base R ------------------------------------------------------------
 get_residuals.lm <- function(object) {
-  dplyr::tibble(.resid = as.numeric(residuals(object)))
+  as.numeric(stats::residuals(object))
 }
 
 # tidymodels --------------------------------------------------------
