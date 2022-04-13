@@ -55,6 +55,11 @@ anderson_darling_test._lm <- function(object, .alpha = 0.05) {
   anderson_darling_test.lm(object[["fit"]], .alpha = .alpha)
 }
 
+#' @export
+anderson_darling_test._glm <- function(object, .alpha = 0.05) {
+  anderson_darling_test._lm(object, .alpha = .alpha)
+}
+
 # Shapiro-Wilk Test -----------------------------------------------------------
 
 #' Run a Shapiro-Wilk Test
@@ -110,4 +115,9 @@ shapiro_wilk_test.lm <- function(object, .alpha = 0.05) {
 #' @export
 shapiro_wilk_test._lm <- function(object, .alpha = 0.05) {
   shapiro_wilk_test.lm(object[["fit"]], .alpha = .alpha)
+}
+
+#' @export
+shapiro_wilk_test._glm <- function(object, .alpha = 0.05) {
+  shapiro_wilk_test._lm(object, .alpha = .alpha)
 }
