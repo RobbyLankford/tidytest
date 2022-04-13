@@ -59,8 +59,15 @@ durbin_watson_test.lm <- function(object, alternative = "two.sided", ...,
 durbin_watson_test._lm <- function(object, alternative = "two.sided", ...,
                                   .alpha = 0.05) {
   durbin_watson_test.lm(
-    object[["fit"]],
-    alternative = alternative, ..., .alpha = .alpha
+    object[["fit"]], alternative = alternative, ..., .alpha = .alpha
+  )
+}
+
+#' @export
+durbin_watson_test._glm <- function(object, alternative = "two.sided", ...,
+                                    .alpha = 0.05) {
+  durbin_watson_test._lm(
+    object, alternative = alternative, ..., .alpha = .alpha
   )
 }
 
@@ -120,4 +127,9 @@ ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
 #' @export
 ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
   ljung_box_test.lm(object[["fit"]], ..., .alpha = .alpha)
+}
+
+#' @export
+ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
+  ljung_box_test._lm(object, ..., .alpha = .alpha)
 }
