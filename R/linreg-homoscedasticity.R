@@ -125,7 +125,8 @@ goldfeld_quandt_test._lm <- function(object, alternative = "two.sided", ...,
 }
 
 #' @export
-goldfeld_quandt_test._glm <- function(object, ..., .alpha = 0.05) {
+goldfeld_quandt_test._glm <- function(object, alternative = "two.sided", ...,
+                                      .alpha = 0.05) {
   goldfeld_quandt_test._lm(
     object, alternative = alternative, ..., .alpha = .alpha
   )
