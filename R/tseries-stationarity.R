@@ -8,10 +8,13 @@
 #' The hypotheses for this test are:
 #'
 #' * Null: Series has a unit root
-#' * Alternative: Series is either stationary of explosive (user defined)
+#' * Alternative: Series is either stationary or has explosive root
+#'   (user defined)
 #'
-#' @inheritParams tseries::adf.test
-#' @param object a model object (such as a fitted `lm` object).
+#' @param x a numeric vector or univariate time series (for numeric method),
+#'   or a model object (such as a fitted `lm` object).
+#' @param alternative the alternative hypothesis, either "stationary" (default)
+#'   or "explosive".
 #' @param ... further arguments passed to \code{\link[tseries]{adf.test}}.
 #' @param .alpha critical p-value used to determine test conclusion.
 #'
@@ -26,26 +29,201 @@
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' dickey_fuller_test(mod_fit)
-#' dickey_fuller_test(mod_fit, alternative = "stationary")
-#' dickey_fuller_test(mod_fit, alternative = "explosive")
+#' aug_dickey_fuller_test(mod_fit)
+#' aug_dickey_fuller_test(mod_fit, alternative = "stationary")
+#' aug_dickey_fuller_test(mod_fit, alternative = "explosive")
 #'
-#' @export
-dickey_fuller_test <- function(object, alternative = "stationary", ...,
-                               .alpha = 0.05) {
-  UseMethod("dickey_fuller_test", object)
+#' @export aug_dickey_fuller_test
+aug_dickey_fuller_test <- function(x, ...) {
+  UseMethod("aug_dickey_fuller_test")
 }
 
+#' @rdname aug_dickey_fuller_test
 #' @export
-dickey_fuller_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object)[[1]])
+aug_dickey_fuller_test.default <- function(x, ...) {
+  stop("No method for object of class ", class(x)[[1]])
 }
 
+#' @rdname aug_dickey_fuller_test
 #' @export
-dickey_fuller_test.lm <- function(object, alternative = "stationary", ...,
-                                  .alpha = 0.05) {
-  object %>%
+aug_dickey_fuller_test.numeric <- function(x,
+                                           alternative = "stationary",
+                                           ...,
+                                           .alpha = 0.05) {
+  tidy_adf(x, alternative = alternative, ..., .alpha = .alpha)
+}
+
+#' @rdname aug_dickey_fuller_test
+#' @export
+aug_dickey_fuller_test.lm <- function(x,
+                                      alternative = "stationary",
+                                      ...,
+                                      .alpha = 0.05) {
+  x %>%
     get_residuals() %>%
+    tidy_adf(alternative = alternative, ..., .alpha = .alpha)
+}
+
+#' @rdname aug_dickey_fuller_test
+#' @export
+aug_dickey_fuller_test._lm <- function(x,
+                                       alternative = "stationary",
+                                       ...,
+                                       .alpha = 0.05) {
+  x[["fit"]] %>%
+    get_residuals() %>%
+    tidy_adf(alternative = alternative, ..., .alpha = .alpha)
+}
+
+
+# Kwiatkowski-Phillips-Schmidt-Shin (KPSS) Test -------------------------------
+
+#' Run a Kwiatkowski-Phillips-Schmidt-Shin (KPSS) Test
+#'
+#' A wrapper around \code{\link[tseries]{kpss.test}} that standardizes the
+#' inputs and outputs.
+#'
+#' The hypotheses for this test are:
+#'
+#' * Null: Series is either Level or Trend stationary (user defined)
+#' * Alternative: Series has a unit root
+#'
+#' @param x a numeric vector or univariate time series (for numeric method),
+#'   or a model object (such as a fitted `lm` object).
+#' @param null the null hypothesis, either "Level" (default) or "Trend".
+#' @param ... further arguments passed to \code{\link[tseries]{kpss.test}}.
+#' @param .alpha critical p-value used to determine test conclusion.
+#'
+#' @return a [tibble][tibble::tibble-package].
+#'
+#' @examples
+#' library(dplyr)
+#' library(parsnip)
+#' library(tidytest)
+#'
+#' mod_fit <- parsnip::linear_reg() %>%
+#'   set_engine("lm") %>%
+#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' kpss_test(mod_fit)
+#' kpss_test(mod_fit, null = "Level")
+#' kpss_test(mod_fit, null = "Trend")
+#'
+#' @export kpss_test
+kpss_test <- function(x, ...) {
+  UseMethod("kpss_test")
+}
+
+#' @rdname kpss_test
+#' @export
+kpss_test.default <- function(x, ...) {
+  stop("No method for object of class ", class(x)[[1]])
+}
+
+#' @rdname kpss_test
+#' @export
+kpss_test.numeric <- function(x, null = "Level", ..., .alpha = 0.05) {
+  tidy_kpss(x, null = null, ..., .alpha = .alpha)
+}
+
+#' @rdname kpss_test
+#' @export
+kpss_test.lm <- function(x, null = "Level", ..., .alpha = 0.05) {
+  x %>%
+    get_residuals() %>%
+    tidy_kpss(null = null, ..., .alpha = .alpha)
+}
+
+#' @rdname kpss_test
+#' @export
+kpss_test._lm <- function(x, null = "Level", ..., .alpha = 0.05) {
+  x[["fit"]] %>%
+    get_residuals() %>%
+    tidy_kpss(null = null, ..., .alpha = .alpha)
+}
+
+
+# Phillips-Perron Unit Root Test ----------------------------------------------
+
+#' Run a Phillips-Perron Unit Root Test
+#'
+#' A wrapper around \code{\link[tseries]{pp.test}} that standardizes the
+#' inputs and outputs.
+#'
+#' The hypotheses for this test are:
+#'
+#' * Null: Series has a unit root
+#' * Alternative: Series is either stationary or has explosive root
+#'   (user defined)
+#'
+#' @param x a  numeric vector or univariate time series (for numeric method),
+#'   or a model object (such as a fitted `lm` object).
+#' @param alternative the alternative hypothesis, either "stationary" (default)
+#'   or "explosive".
+#' @param ... further arguments passed to \code{\link[tseries]{pp.test}}.
+#' @param .alpha critical p-value used to determine test conclusion.
+#'
+#' @return a [tibble][tibble::tibble-package].
+#'
+#' @examples
+#' library(dplyr)
+#' library(parsnip)
+#' library(tidytest)
+#'
+#' mod_fit <- parsnip::linear_reg() %>%
+#'   set_engine("lm") %>%
+#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' phillips_perron_test(mod_fit)
+#' phillips_perron_test(mod_fit, alternative = "stationary")
+#' phillips_perron_test(mod_fit, alternative = "explosive")
+#'
+#' @export phillips_perron_test
+phillips_perron_test <- function(x, ...) {
+  UseMethod("phillips_perron_test")
+}
+
+#' @rdname phillips_perron_test
+#' @export
+phillips_perron_test.default <- function(x, ...) {
+  stop("No method for object of class ", class(x)[[1]])
+}
+
+#' @rdname phillips_perron_test
+#' @export
+phillips_perron_test.numeric <- function(x,
+                                         alternative = "stationary",
+                                         ...,
+                                         .alpha = 0.05) {
+  tidy_pp(x, alternative = alternative, ..., .alpha = .alpha)
+}
+
+#' @rdname phillips_perron_test
+#' @export
+phillips_perron_test.lm <- function(x,
+                                    alternative = "stationary",
+                                    ...,
+                                    .alpha = 0.05) {
+  x %>%
+    get_residuals() %>%
+    tidy_pp(alternative = alternative, ..., .alpha = .alpha)
+}
+
+#' @rdname phillips_perron_test
+#' @export
+phillips_perron_test._lm <- function(x,
+                                     alternative = "stationary",
+                                     ...,
+                                     .alpha = 0.05) {
+  x[["fit"]] %>%
+    get_residuals() %>%
+    tidy_pp(alternative = alternative, ..., .alpha = .alpha)
+}
+
+
+# Utils -----------------------------------------------------------------------
+tidy_adf <- function(x, alternative = "stationary", ..., .alpha = 0.05) {
+  x %>%
     tseries::adf.test(alternative = alternative, ...) %>%
     tidy_test(
       statistic, p.value,
@@ -56,10 +234,30 @@ dickey_fuller_test.lm <- function(object, alternative = "stationary", ...,
     )
 }
 
-#' @export
-dickey_fuller_test._lm <- function(object, alternative = "stationary", ...,
-                                   .alpha = 0.05) {
-  dickey_fuller_test.lm(
-    object[["fit"]], alternative = alternative, ..., .alpha = .alpha
-  )
+tidy_kpss <- function(x, null = "Level", ..., .alpha = 0.05) {
+  x %>%
+    tseries::kpss.test(null = null, ...) %>%
+    tidy_test(
+      statistic, p.value,
+      test  = "Kwiatkowski-Phillips-Schmidt-Shin",
+      null  = paste(null, "Stationary"),
+      alt   = "Unit Root",
+      alpha = .alpha
+    )
+}
+
+tidy_pp <- function(x, alternative = "stationary", ..., .alpha = 0.05) {
+  x %>%
+    tseries::pp.test(alternative = alternative, ...) %>%
+    tidy_test(
+      statistic, p.value,
+      test  = "Phillips-Perron",
+      null  = "Unit Root",
+      alpha = .alpha,
+      alt   = dplyr::if_else(
+        alternative == "stationary",
+        "Stationary",
+        "Explosive Root"
+      )
+    )
 }
