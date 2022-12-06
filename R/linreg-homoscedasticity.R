@@ -39,15 +39,15 @@ bruesch_pagan_test.default <- function(object, ...) {
 
 #' @export
 bruesch_pagan_test.lm <- function(object, ..., .alpha = 0.05) {
-  object %>%
-    lmtest::bptest(...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Bruesch-Pagan",
-      null  = "Variances Are Equal",
-      alt   = "Variances Are Not Equal",
-      alpha = .alpha
-    )
+  tidy_test(
+    object,
+    lmtest::bptest,
+    ...,
+    .test   = "Bruesch-Pagan",
+    .null   = "Variances Are Equal",
+    .alt    = "Variances Are Not Equal",
+    .alpha = .alpha
+  )
 }
 
 #' @export
@@ -92,7 +92,9 @@ bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
 #' goldfeld_quandt_test(mod_fit)
 #'
 #' @export
-goldfeld_quandt_test <- function(object, alternative = "two.sided", ...,
+goldfeld_quandt_test <- function(object,
+                                 alternative = "two.sided",
+                                 ...,
                                  .alpha = 0.05) {
   UseMethod("goldfeld_quandt_test")
 }
@@ -103,21 +105,26 @@ goldfeld_quandt_test.default <- function(object, ...) {
 }
 
 #' @export
-goldfeld_quandt_test.lm <- function(object, alternative = "two.sided", ...,
+goldfeld_quandt_test.lm <- function(object,
+                                    alternative = "two.sided",
+                                    ...,
                                     .alpha = 0.05) {
-  object %>%
-    lmtest::gqtest(...) %>%
-    tidy_test(
-      df1, df2, statistic, p.value,
-      test  = "Goldfeld-Quandt",
-      null  = "Variances Are Equal",
-      alt   = "Variances Are Not Equal",
-      alpha = .alpha
-    )
+  tidy_test(
+    object,
+    lmtest::gqtest,
+    alternative = alternative,
+    ...,
+    .test   = "Goldfeld-Quandt",
+    .null   = "Variances Are Equal",
+    .alt    = "Variances Are Not Equal",
+    .alpha = .alpha
+  )
 }
 
 #' @export
-goldfeld_quandt_test._lm <- function(object, alternative = "two.sided", ...,
+goldfeld_quandt_test._lm <- function(object,
+                                     alternative = "two.sided",
+                                     ...,
                                      .alpha = 0.05) {
   goldfeld_quandt_test.lm(
     object[["fit"]], alternative = alternative, ..., .alpha = .alpha
@@ -125,7 +132,9 @@ goldfeld_quandt_test._lm <- function(object, alternative = "two.sided", ...,
 }
 
 #' @export
-goldfeld_quandt_test._glm <- function(object, alternative = "two.sided", ...,
+goldfeld_quandt_test._glm <- function(object,
+                                      alternative = "two.sided",
+                                      ...,
                                       .alpha = 0.05) {
   goldfeld_quandt_test._lm(
     object, alternative = alternative, ..., .alpha = .alpha

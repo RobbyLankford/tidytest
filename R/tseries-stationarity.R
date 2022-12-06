@@ -50,7 +50,16 @@ aug_dickey_fuller_test.numeric <- function(x,
                                            alternative = "stationary",
                                            ...,
                                            .alpha = 0.05) {
-  tidy_adf(x, alternative = alternative, ..., .alpha = .alpha)
+  tidy_test(
+    x,
+    tseries::adf.test,
+    alternative = alternative,
+    ...,
+    .test   = "Augmented Dickey-Fuller",
+    .null   = "Not Stationary",
+    .alt    = "Stationary",
+    .alpha = .alpha
+  )
 }
 
 #' @rdname aug_dickey_fuller_test
@@ -59,9 +68,14 @@ aug_dickey_fuller_test.lm <- function(x,
                                       alternative = "stationary",
                                       ...,
                                       .alpha = 0.05) {
-  x %>%
-    get_residuals() %>%
-    tidy_adf(alternative = alternative, ..., .alpha = .alpha)
+  resids <- get_residuals(x)
+
+  aug_dickey_fuller_test.numeric(
+    resids,
+    alternative = alternative,
+    ...,
+    .alpha = .alpha
+  )
 }
 
 #' @rdname aug_dickey_fuller_test
@@ -70,9 +84,14 @@ aug_dickey_fuller_test._lm <- function(x,
                                        alternative = "stationary",
                                        ...,
                                        .alpha = 0.05) {
-  x[["fit"]] %>%
-    get_residuals() %>%
-    tidy_adf(alternative = alternative, ..., .alpha = .alpha)
+  resids <- get_residuals(x[["fit"]])
+
+  aug_dickey_fuller_test.numeric(
+    resids,
+    alternative = alternative,
+    ...,
+    .alpha = .alpha
+  )
 }
 
 
@@ -123,23 +142,32 @@ kpss_test.default <- function(x, ...) {
 #' @rdname kpss_test
 #' @export
 kpss_test.numeric <- function(x, null = "Level", ..., .alpha = 0.05) {
-  tidy_kpss(x, null = null, ..., .alpha = .alpha)
+  tidy_test(
+    x,
+    tseries::kpss.test,
+    null = null,
+    ...,
+    .test   = "Kwiatkowski-Phillips-Schmidt-Shin",
+    .null   = paste(null, "Stationary"),
+    .alt    = "Unit Root",
+    .alpha = .alpha
+  )
 }
 
 #' @rdname kpss_test
 #' @export
 kpss_test.lm <- function(x, null = "Level", ..., .alpha = 0.05) {
-  x %>%
-    get_residuals() %>%
-    tidy_kpss(null = null, ..., .alpha = .alpha)
+  resids <- get_residuals(x)
+
+  kpss_test.numeric(resids, null = null, ..., .alpha = .alpha)
 }
 
 #' @rdname kpss_test
 #' @export
 kpss_test._lm <- function(x, null = "Level", ..., .alpha = 0.05) {
-  x[["fit"]] %>%
-    get_residuals() %>%
-    tidy_kpss(null = null, ..., .alpha = .alpha)
+  resids <- get_residuals(x[["fit"]])
+
+  kpss_test.numeric(resids, null = null, ..., .alpha = .alpha)
 }
 
 
@@ -195,7 +223,20 @@ phillips_perron_test.numeric <- function(x,
                                          alternative = "stationary",
                                          ...,
                                          .alpha = 0.05) {
-  tidy_pp(x, alternative = alternative, ..., .alpha = .alpha)
+  tidy_test(
+    x,
+    tseries::pp.test,
+    alternative = alternative,
+    ...,
+    .test   = "Phillips-Perron",
+    .null   = "Unit Root",
+    .alpha  = .alpha,
+    .alt    = dplyr::if_else(
+      alternative == "stationary",
+      "Stationary",
+      "Explosive Root"
+    )
+  )
 }
 
 #' @rdname phillips_perron_test
@@ -204,9 +245,14 @@ phillips_perron_test.lm <- function(x,
                                     alternative = "stationary",
                                     ...,
                                     .alpha = 0.05) {
-  x %>%
-    get_residuals() %>%
-    tidy_pp(alternative = alternative, ..., .alpha = .alpha)
+  resids <- get_residuals(x)
+
+  phillips_perron_test.numeric(
+    resids,
+    alternative = alternative,
+    ...,
+    .alpha = .alpha
+  )
 }
 
 #' @rdname phillips_perron_test
@@ -215,49 +261,12 @@ phillips_perron_test._lm <- function(x,
                                      alternative = "stationary",
                                      ...,
                                      .alpha = 0.05) {
-  x[["fit"]] %>%
-    get_residuals() %>%
-    tidy_pp(alternative = alternative, ..., .alpha = .alpha)
-}
+  resids <- get_residuals(x[["fit"]])
 
-
-# Utils -----------------------------------------------------------------------
-tidy_adf <- function(x, alternative = "stationary", ..., .alpha = 0.05) {
-  x %>%
-    tseries::adf.test(alternative = alternative, ...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Augmented Dickey-Fuller",
-      null  = "Not Stationary",
-      alt   = "Stationary",
-      alpha = .alpha
-    )
-}
-
-tidy_kpss <- function(x, null = "Level", ..., .alpha = 0.05) {
-  x %>%
-    tseries::kpss.test(null = null, ...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Kwiatkowski-Phillips-Schmidt-Shin",
-      null  = paste(null, "Stationary"),
-      alt   = "Unit Root",
-      alpha = .alpha
-    )
-}
-
-tidy_pp <- function(x, alternative = "stationary", ..., .alpha = 0.05) {
-  x %>%
-    tseries::pp.test(alternative = alternative, ...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Phillips-Perron",
-      null  = "Unit Root",
-      alpha = .alpha,
-      alt   = dplyr::if_else(
-        alternative == "stationary",
-        "Stationary",
-        "Explosive Root"
-      )
-    )
+  phillips_perron_test.numeric(
+    resids,
+    alternative = alternative,
+    ...,
+    .alpha = .alpha
+  )
 }

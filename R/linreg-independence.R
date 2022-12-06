@@ -31,7 +31,9 @@
 #' durbin_watson_test(mod_fit, alternative = "two.sided")
 #'
 #' @export
-durbin_watson_test <- function(object, alternative = "two.sided", ...,
+durbin_watson_test <- function(object,
+                               alternative = "two.sided",
+                               ...,
                               .alpha = 0.05) {
   UseMethod("durbin_watson_test")
 }
@@ -42,21 +44,26 @@ durbin_watson_test.default <- function(object, ...) {
 }
 
 #' @export
-durbin_watson_test.lm <- function(object, alternative = "two.sided", ...,
+durbin_watson_test.lm <- function(object,
+                                  alternative = "two.sided",
+                                  ...,
                                   .alpha = 0.05) {
-  object %>%
-    lmtest::dwtest(alternative = alternative, ...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Durbin-Watson",
-      null  = "No Autocorrelation",
-      alt   = "Autocorrelation",
-      alpha = .alpha
-    )
+  tidy_test(
+    object,
+    lmtest::dwtest,
+    alternative = alternative,
+    ...,
+    .test   = "Durbin-Watson",
+    .null   = "No Autocorrelation",
+    .alt    = "Autocorrelation",
+    .alpha = .alpha
+  )
 }
 
 #' @export
-durbin_watson_test._lm <- function(object, alternative = "two.sided", ...,
+durbin_watson_test._lm <- function(object,
+                                   alternative = "two.sided",
+                                   ...,
                                   .alpha = 0.05) {
   durbin_watson_test.lm(
     object[["fit"]], alternative = alternative, ..., .alpha = .alpha
@@ -64,7 +71,9 @@ durbin_watson_test._lm <- function(object, alternative = "two.sided", ...,
 }
 
 #' @export
-durbin_watson_test._glm <- function(object, alternative = "two.sided", ...,
+durbin_watson_test._glm <- function(object,
+                                    alternative = "two.sided",
+                                    ...,
                                     .alpha = 0.05) {
   durbin_watson_test._lm(
     object, alternative = alternative, ..., .alpha = .alpha
@@ -112,16 +121,18 @@ ljung_box_test.default <- function(object, ...) {
 
 #' @export
 ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
-  object %>%
-    get_residuals() %>%
-    Box.test(type = "Ljung-Box", ...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Ljung-Box",
-      null  = "No Autocorrelation",
-      alt   = "Autocorrelation",
-      alpha = .alpha
-    )
+  resids <- get_residuals(object)
+
+  tidy_test(
+    resids,
+    Box.test,
+    type = "Ljung-Box",
+    ...,
+    .test   = "Ljung-Box",
+    .null   = "No Autocorrelation",
+    .alt    = "Autocorrelation",
+    .alpha = .alpha
+  )
 }
 
 #' @export

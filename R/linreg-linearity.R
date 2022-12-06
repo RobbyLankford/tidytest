@@ -1,4 +1,4 @@
-# Ramsey's RESET --------------------------------------------------------------
+# Ramsey's RESET Test ---------------------------------------------------------
 
 #' Run a Ramsey's Regression Equation Specification Error Test (RESET)
 #'
@@ -26,39 +26,40 @@
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' ramsey_reset(mod_fit)
+#' ramsey_reset_test(mod_fit)
 #'
 #' @export
-ramsey_reset <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  UseMethod("ramsey_reset")
+ramsey_reset_test <- function(object, power = 2:3, ..., .alpha = 0.05) {
+  UseMethod("ramsey_reset_test")
 }
 
 #' @export
-ramsey_reset.default <- function(object, ...) {
+ramsey_reset_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
 #' @export
-ramsey_reset.lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  object %>%
-    lmtest::resettest(power = power, ...) %>%
-    tidy_test(
-      df1, df2, statistic, p.value,
-      test  = "Ramsey's RESET",
-      null  = "Linear Specification is Valid",
-      alt   = "Linear Specification is Not Valid",
-      alpha = .alpha
-    )
+ramsey_reset_test.lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
+  tidy_test(
+    object,
+    lmtest::resettest,
+    power = power,
+    ...,
+    .test   = "Ramsey's RESET",
+    .null   = "Linear Specification is Valid",
+    .alt    = "Linear Specification is Not Valid",
+    .alpha = .alpha
+  )
 }
 
 #' @export
-ramsey_reset._lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  ramsey_reset.lm(object[["fit"]], power = power, ..., .alpha = .alpha)
+ramsey_reset_test._lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
+  ramsey_reset_test.lm(object[["fit"]], power = power, ..., .alpha = .alpha)
 }
 
 #' @export
-ramsey_reset._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  ramsey_reset._lm(object, power = power, ..., .alpha = .alpha)
+ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
+  ramsey_reset_test._lm(object, power = power, ..., .alpha = .alpha)
 }
 
 
@@ -103,15 +104,15 @@ harvey_collier_test.default <- function(object, ...) {
 
 #' @export
 harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
-  object %>%
-    lmtest::harvtest(...) %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Harvey-Collier",
-      null  = "True Relationship is Linear",
-      alt   = "True Relationship is Not Linear (Convex or Concave)",
-      alpha = .alpha
-    )
+  tidy_test(
+    object,
+    lmtest::harvtest,
+    ...,
+    .test   = "Harvey-Collier",
+    .null   = "True Relationship is Linear",
+    .alt    = "True Relationship is Not Linear (Convex or Concave)",
+    .alpha = .alpha
+  )
 }
 
 #' @export

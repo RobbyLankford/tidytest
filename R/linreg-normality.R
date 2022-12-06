@@ -11,6 +11,7 @@
 #' * Alternative: Does Not Follow a Normal Distribution
 #'
 #' @param object a model object (such as a fitted `lm` object).
+#' @param ... not currently used.
 #' @param .alpha critical p-value used to determine test conclusion.
 #'
 #' @return a [tibble][tibble::tibble-package].
@@ -27,7 +28,7 @@
 #' anderson_darling_test(mod_fit)
 #'
 #' @export
-anderson_darling_test <- function(object, .alpha = 0.05) {
+anderson_darling_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("anderson_darling_test")
 }
 
@@ -37,27 +38,28 @@ anderson_darling_test.default <- function(object, ...) {
 }
 
 #' @export
-anderson_darling_test.lm <- function(object, .alpha = 0.05) {
-  object %>%
-    get_residuals() %>%
-    nortest::ad.test() %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Anderson-Darling",
-      null  = "Follows a Normal Distribution",
-      alt   = "Does Not Follow a Normal Distribution",
-      alpha = .alpha
-    )
+anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
+  resids <- get_residuals(object)
+
+  tidy_test(
+    resids,
+    nortest::ad.test,
+    ...,
+    .test   = "Anderson-Darling",
+    .null   = "Follows a Normal Distribution",
+    .alt    = "Does Not Follow a Normal Distribution",
+    .alpha = .alpha
+  )
 }
 
 #' @export
-anderson_darling_test._lm <- function(object, .alpha = 0.05) {
-  anderson_darling_test.lm(object[["fit"]], .alpha = .alpha)
+anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
+  anderson_darling_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
 #' @export
-anderson_darling_test._glm <- function(object, .alpha = 0.05) {
-  anderson_darling_test._lm(object, .alpha = .alpha)
+anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
+  anderson_darling_test._lm(object, ..., .alpha = .alpha)
 }
 
 # Shapiro-Wilk Test -----------------------------------------------------------
@@ -73,6 +75,7 @@ anderson_darling_test._glm <- function(object, .alpha = 0.05) {
 #' * Alternative: Does Not Follow a Normal Distribution
 #'
 #' @param object a model object (such as a fitted `lm` object).
+#' @param ... not currently used.
 #' @param .alpha critical p-value used to determine test conclusion.
 #'
 #' @return a [tibble][tibble::tibble-package].
@@ -89,7 +92,7 @@ anderson_darling_test._glm <- function(object, .alpha = 0.05) {
 #' shapiro_wilk_test(mod_fit)
 #'
 #' @export
-shapiro_wilk_test <- function(object, .alpha = 0.05) {
+shapiro_wilk_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("shapiro_wilk_test")
 }
 
@@ -99,25 +102,26 @@ shapiro_wilk_test.default <- function(object, ...) {
 }
 
 #' @export
-shapiro_wilk_test.lm <- function(object, .alpha = 0.05) {
-  object %>%
-    get_residuals() %>%
-    shapiro.test() %>%
-    tidy_test(
-      statistic, p.value,
-      test  = "Shapiro-Wilk",
-      null  = "Follows a Normal Distribution",
-      alt   = "Does Not Follow a Normal Distribution",
-      alpha = .alpha
-    )
+shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
+  resids <- get_residuals(object)
+
+  tidy_test(
+    resids,
+    shapiro.test,
+    ...,
+    .test   = "Shapiro-Wilk",
+    .null   = "Follows a Normal Distribution",
+    .alt    = "Does Not Follow a Normal Distribution",
+    .alpha = .alpha
+  )
 }
 
 #' @export
-shapiro_wilk_test._lm <- function(object, .alpha = 0.05) {
-  shapiro_wilk_test.lm(object[["fit"]], .alpha = .alpha)
+shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
+  shapiro_wilk_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
 #' @export
-shapiro_wilk_test._glm <- function(object, .alpha = 0.05) {
-  shapiro_wilk_test._lm(object, .alpha = .alpha)
+shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
+  shapiro_wilk_test._lm(object, ..., .alpha = .alpha)
 }
