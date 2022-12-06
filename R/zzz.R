@@ -1,4 +1,4 @@
 globalVariables(
-  c("method", "statistic", "p.value", "residuals", ".resid",
-    "Box.test", "shapiro.test", "alternative", "df1", "df2")
+  c("p_value", "statistic", "null", "alt", "parameters",
+    "Box.test", "shapiro.test", "test", "result", "outcome", ".notes")
 )
