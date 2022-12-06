@@ -4,10 +4,12 @@
 \alias{anderson_darling_test}
 \title{Run an Anderson-Darling Test}
 \usage{
-anderson_darling_test(object, .alpha = 0.05)
+anderson_darling_test(object, ..., .alpha = 0.05)
 }
 \arguments{
 \item{object}{a model object (such as a fitted \code{lm} object).}
+
+\item{...}{not currently used.}
 
 \item{.alpha}{critical p-value used to determine test conclusion.}
 }

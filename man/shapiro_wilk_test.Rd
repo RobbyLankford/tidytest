@@ -4,10 +4,12 @@
 \alias{shapiro_wilk_test}
 \title{Run a Shapiro-Wilk Test}
 \usage{
-shapiro_wilk_test(object, .alpha = 0.05)
+shapiro_wilk_test(object, ..., .alpha = 0.05)
 }
 \arguments{
 \item{object}{a model object (such as a fitted \code{lm} object).}
+
+\item{...}{not currently used.}
 
 \item{.alpha}{critical p-value used to determine test conclusion.}
 }
