@@ -54,6 +54,57 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
 }
 
 
+
+# Outliers -------------------------------------------------------------------
+
+#' Identify Outliers
+#'
+#' A data point flagged as an outlier means that is has an extreme value in its
+#' response (y) variable. If this is the case, the data point(s) is/are
+#' influential, meaning that it has an outsized influence on a regression.
+#'
+#' @details
+#' Outliers are defined as those data points that have a standardized
+#' residual value greater than some cutoff value. A traditional rule-of-thumb
+#' is for that cutoff value to be three.
+#'
+#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
+#' @param id (Optional) A vector of values, the same length as the number of
+#'   observations, used as an identifier for each data point. If left as NULL,
+#'   the row number will be added as the ID column.
+#' @param .cutoff (Optional) Used to determine which standard residuals are
+#'   indicative of an outlier. The default is the rule-of-thumb 3
+#'   (see details).
+#'
+#' @return A [`tibble`][tibble::tibble].
+#'
+#' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
+#'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
+#'   McGraw-Hill/Irwin.
+#'
+#' @examples
+#' library(dplyr)
+#' library(parsnip)
+#' library(tidytest)
+#'
+#' mod_fit <- parsnip::linear_reg() %>%
+#'   set_engine("lm") %>%
+#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' #> No outliers with default `.cutoff` value
+#' identify_outliers(mod_fit)
+#'
+#' #> Try a lower `.cutoff` value
+#' identify_outliers(mod_fit, .cutoff = 2)
+#' identify_outliers(mod_fit, id = rownames(mtcars), .cutoff = 2)
+#'
+#' @export
+identify_outliers <- function(object, id = NULL, .cutoff = 3) {
+  std_resids_tbl <- get_standardized_residuals(object, id)
+
+  dplyr::filter(std_resids_tbl, std_resid > .cutoff)
+}
+
 # Utilities -------------------------------------------------------------------
 
 #> Number of coefficients in a model
@@ -108,4 +159,19 @@ get_leverages.lm <- function(object, id = NULL) {
 
 get_leverages._lm <- function(object, id = NULL) {
   get_leverages.lm(object[["fit"]], id = id)
+}
+
+#> Calculate the standardized residual of each data point
+get_standardized_residuals <- function(object, id = NULL, ...) {
+  UseMethod("get_standardized_residuals")
+}
+
+get_standardized_residuals.lm <- function(object, id = NULL) {
+  std_resids <- as.numeric(stats::rstandard(object))
+
+  add_id(std_resids, name = "std_resid", id = id)
+}
+
+get_standardized_residuals._lm <- function(object, id = NULL) {
+  get_standardized_residuals.lm(object[["fit"]], id = id)
 }
