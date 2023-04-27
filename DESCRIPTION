@@ -20,9 +20,10 @@ Imports:
     magrittr,
     nortest,
     qqplotr,
-    rlang,
+    rlang (>= 0.4.11),
     tibble,
     tidyr (>= 1.0.0),
     tseries
 Suggests: 
-    parsnip
+    parsnip,
+    roxygen2
