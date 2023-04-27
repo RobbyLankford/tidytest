@@ -1,5 +1,5 @@
 get_residuals <- function(object, ...) {
-  UseMethod("get_residuals", object)
+  UseMethod("get_residuals")
 }
 
 # Base R ----------------------------------------------------------------------
