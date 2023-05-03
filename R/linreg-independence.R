@@ -10,12 +10,10 @@
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
-#' @inheritParams lmtest::dwtest
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[lmtest]{dwtest}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams goldfeld_quandt_test
+#' @param ... Further arguments passed to \code{\link[lmtest]{dwtest}}.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -38,11 +36,13 @@ durbin_watson_test <- function(object,
   UseMethod("durbin_watson_test")
 }
 
+#' @rdname durbin_watson_test
 #' @export
 durbin_watson_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname durbin_watson_test
 #' @export
 durbin_watson_test.lm <- function(object,
                                   alternative = "two.sided",
@@ -60,6 +60,7 @@ durbin_watson_test.lm <- function(object,
   )
 }
 
+#' @rdname durbin_watson_test
 #' @export
 durbin_watson_test._lm <- function(object,
                                    alternative = "two.sided",
@@ -70,6 +71,7 @@ durbin_watson_test._lm <- function(object,
   )
 }
 
+#' @rdname durbin_watson_test
 #' @export
 durbin_watson_test._glm <- function(object,
                                     alternative = "two.sided",
@@ -92,11 +94,10 @@ durbin_watson_test._glm <- function(object,
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[stats]{Box.test}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams bruesch_pagan_test
+#' @param ... Further arguments passed to \code{\link[stats]{Box.test}}.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -114,11 +115,13 @@ ljung_box_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("ljung_box_test")
 }
 
+#' @rdname ljung_box_test
 #' @export
 ljung_box_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname ljung_box_test
 #' @export
 ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
@@ -135,11 +138,13 @@ ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname ljung_box_test
 #' @export
 ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
   ljung_box_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
+#' @rdname ljung_box_test
 #' @export
 ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
   ljung_box_test._lm(object, ..., .alpha = .alpha)

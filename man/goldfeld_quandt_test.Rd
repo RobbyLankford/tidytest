@@ -2,22 +2,35 @@
 % Please edit documentation in R/linreg-homoscedasticity.R
 \name{goldfeld_quandt_test}
 \alias{goldfeld_quandt_test}
+\alias{goldfeld_quandt_test.default}
+\alias{goldfeld_quandt_test.lm}
+\alias{goldfeld_quandt_test._lm}
+\alias{goldfeld_quandt_test._glm}
 \title{Run a Goldfeld-Quandt Test}
 \usage{
 goldfeld_quandt_test(object, alternative = "two.sided", ..., .alpha = 0.05)
+
+\method{goldfeld_quandt_test}{default}(object, ...)
+
+\method{goldfeld_quandt_test}{lm}(object, alternative = "two.sided", ..., .alpha = 0.05)
+
+\method{goldfeld_quandt_test}{`_lm`}(object, alternative = "two.sided", ..., .alpha = 0.05)
+
+\method{goldfeld_quandt_test}{`_glm`}(object, alternative = "two.sided", ..., .alpha = 0.05)
 }
 \arguments{
-\item{object}{a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{alternative}{a character string specifying the alternative hypothesis.
-    The default is to test for increasing variances.}
+\item{alternative}{The alternative hypothesis, one of "two.sided" (default),
+"greater", or "less".}
 
-\item{...}{further arguments passed to \code{\link[lmtest]{gqtest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest]{gqtest}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A wrapper around \code{\link[lmtest]{gqtest}} that standardizes the inputs

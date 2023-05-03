@@ -8,7 +8,7 @@
 #' residuals on the y-axis. If the resulting scatterplot shows a discernible
 #' pattern, then either or both of the assumptions are likely violated.
 #'
-#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
+#' @inheritParams bruesch_pagan_test
 #' @param data A data set ([`data.frame`][base::data.frame] or
 #'   [`tibble`][tibble::tibble]) used to calculate predicted values and
 #'   residuals (likely want to use the data off of which the model was built).
@@ -52,10 +52,7 @@ plot_pred_vs_resid <- function(object, data, .origin = "dashed") {
 #' of the points fall outside of the confidence band, the assumption is likely
 #' violated.
 #'
-#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
-#' @param data A data set ([`data.frame`][base::data.frame] or
-#'   [`tibble`][tibble::tibble]) used to calculate predicted values and
-#'   residuals (likely want to use the data off of which the model was built).
+#' @inheritParams plot_pred_vs_resid
 #'
 #' @return A [`ggplot`][ggplot2::ggplot] object.
 #'

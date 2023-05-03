@@ -3,7 +3,7 @@
 #' A wrapper around \code{\link[car]{vif}} that standardizes the inputs and
 #' outputs.
 #'
-#' @param object A model object (such as a fitted `lm` object).
+#' @inheritParams bruesch_pagan_test
 #'
 #' @return A [tibble][tibble::tibble-package].
 #'

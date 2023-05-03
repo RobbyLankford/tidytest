@@ -13,7 +13,7 @@
 #' multiplied by some multiplier. A traditional rule-of-thumb is for the
 #' multiplier to be three.
 #'
-#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
+#' @inheritParams bruesch_pagan_test
 #' @param id (Optional) A vector of values, the same length as the number of
 #'   observations, used as an identifier for each data point. If left as NULL,
 #'   the row number will be added as the ID column.
@@ -68,10 +68,7 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
 #' residual value greater than some cutoff value. A traditional rule-of-thumb
 #' is for that cutoff value to be three.
 #'
-#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
-#' @param id (Optional) A vector of values, the same length as the number of
-#'   observations, used as an identifier for each data point. If left as NULL,
-#'   the row number will be added as the ID column.
+#' @inheritParams identify_extreme_leverages
 #' @param .cutoff (Optional) Used to determine which standard residuals are
 #'   indicative of an outlier. The default is the rule-of-thumb 3
 #'   (see details).

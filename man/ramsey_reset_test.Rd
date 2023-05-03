@@ -2,23 +2,36 @@
 % Please edit documentation in R/linreg-linearity.R
 \name{ramsey_reset_test}
 \alias{ramsey_reset_test}
+\alias{ramsey_reset_test.default}
+\alias{ramsey_reset_test.lm}
+\alias{ramsey_reset_test._lm}
+\alias{ramsey_reset_test._glm}
 \title{Run a Ramsey's Regression Equation Specification Error Test (RESET)}
 \usage{
 ramsey_reset_test(object, power = 2:3, ..., .alpha = 0.05)
+
+\method{ramsey_reset_test}{default}(object, ...)
+
+\method{ramsey_reset_test}{lm}(object, power = 2:3, ..., .alpha = 0.05)
+
+\method{ramsey_reset_test}{`_lm`}(object, power = 2:3, ..., .alpha = 0.05)
+
+\method{ramsey_reset_test}{`_glm`}(object, power = 2:3, ..., .alpha = 0.05)
 }
 \arguments{
-\item{object}{a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{power}{integers. A vector of positive integers indicating
-    the powers of the variables that should be included. By default,
-    the test is for quadratic or cubic influence of the fitted response.}
+\item{power}{(Optional) A vector of positive integers indicating the powers
+of the variables that should be included. The default is 2:3, meaning
+quadratic or cubic influence of the fitted response.}
 
-\item{...}{further arguments passed to \code{\link[lmtest]{resettest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest]{resettest}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A wrapper around \code{\link[lmtest]{resettest}} that standardizes the

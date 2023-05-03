@@ -10,11 +10,12 @@
 #' * Null: Variances are Equal (Homoscedastic)
 #' * Alternative: Variances are Not Equal (Heteroscedastic)
 #'
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[lmtest]{bptest}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
+#' @param ... Further arguments passed to \code{\link[lmtest]{bptest}}.
+#' @param .alpha (Optional) Critical p-value used to determine test conclusion.
+#'   The default is 0.05 (5%).
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -32,11 +33,13 @@ bruesch_pagan_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("bruesch_pagan_test")
 }
 
+#' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test.lm <- function(object, ..., .alpha = 0.05) {
   tidy_test(
@@ -50,11 +53,13 @@ bruesch_pagan_test.lm <- function(object, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test._lm <- function(object, ..., .alpha = 0.05) {
   bruesch_pagan_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
+#' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
   bruesch_pagan_test._lm(object, ..., .alpha = .alpha)
@@ -73,12 +78,12 @@ bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
 #' * Null: Variances are Equal (Homoscedastic)
 #' * Alternative: Variances are Not Equal (Heteroscedastic)
 #'
-#' @inheritParams lmtest::gqtest
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[lmtest]{gqtest}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams bruesch_pagan_test
+#' @param alternative The alternative hypothesis, one of "two.sided" (default),
+#'   "greater", or "less".
+#' @param ... Further arguments passed to \code{\link[lmtest]{gqtest}}.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -99,11 +104,13 @@ goldfeld_quandt_test <- function(object,
   UseMethod("goldfeld_quandt_test")
 }
 
+#' @rdname goldfeld_quandt_test
 #' @export
 goldfeld_quandt_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname goldfeld_quandt_test
 #' @export
 goldfeld_quandt_test.lm <- function(object,
                                     alternative = "two.sided",
@@ -121,6 +128,7 @@ goldfeld_quandt_test.lm <- function(object,
   )
 }
 
+#' @rdname goldfeld_quandt_test
 #' @export
 goldfeld_quandt_test._lm <- function(object,
                                      alternative = "two.sided",
@@ -131,6 +139,7 @@ goldfeld_quandt_test._lm <- function(object,
   )
 }
 
+#' @rdname goldfeld_quandt_test
 #' @export
 goldfeld_quandt_test._glm <- function(object,
                                       alternative = "two.sided",

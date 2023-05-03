@@ -2,19 +2,32 @@
 % Please edit documentation in R/linreg-independence.R
 \name{ljung_box_test}
 \alias{ljung_box_test}
+\alias{ljung_box_test.default}
+\alias{ljung_box_test.lm}
+\alias{ljung_box_test._lm}
+\alias{ljung_box_test._glm}
 \title{Run a Ljung-Box Test}
 \usage{
 ljung_box_test(object, ..., .alpha = 0.05)
+
+\method{ljung_box_test}{default}(object, ...)
+
+\method{ljung_box_test}{lm}(object, ..., .alpha = 0.05)
+
+\method{ljung_box_test}{`_lm`}(object, ..., .alpha = 0.05)
+
+\method{ljung_box_test}{`_glm`}(object, ..., .alpha = 0.05)
 }
 \arguments{
-\item{object}{a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{further arguments passed to \code{\link[stats]{Box.test}}.}
+\item{...}{Further arguments passed to \code{\link[stats]{Box.test}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A wrapper around \code{\link[stats]{Box.test}} that standardizes the inputs

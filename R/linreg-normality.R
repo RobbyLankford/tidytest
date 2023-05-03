@@ -10,11 +10,10 @@
 #' * Null: Follows a Normal Distribution
 #' * Alternative: Does Not Follow a Normal Distribution
 #'
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... not currently used.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams bruesch_pagan_test
+#' @param ... Not currently used.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -32,11 +31,13 @@ anderson_darling_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("anderson_darling_test")
 }
 
+#' @rdname anderson_darling_test
 #' @export
 anderson_darling_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname anderson_darling_test
 #' @export
 anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
@@ -52,11 +53,13 @@ anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
   anderson_darling_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
+#' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
   anderson_darling_test._lm(object, ..., .alpha = .alpha)
@@ -74,11 +77,9 @@ anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
 #' * Null: Follows a Normal Distribution
 #' * Alternative: Does Not Follow a Normal Distribution
 #'
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... not currently used.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams anderson_darling_test
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -96,11 +97,13 @@ shapiro_wilk_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("shapiro_wilk_test")
 }
 
+#' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
@@ -116,11 +119,13 @@ shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
   shapiro_wilk_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
+#' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
   shapiro_wilk_test._lm(object, ..., .alpha = .alpha)

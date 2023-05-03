@@ -2,19 +2,32 @@
 % Please edit documentation in R/linreg-homoscedasticity.R
 \name{bruesch_pagan_test}
 \alias{bruesch_pagan_test}
+\alias{bruesch_pagan_test.default}
+\alias{bruesch_pagan_test.lm}
+\alias{bruesch_pagan_test._lm}
+\alias{bruesch_pagan_test._glm}
 \title{Run a Bruesch-Pagan Test}
 \usage{
 bruesch_pagan_test(object, ..., .alpha = 0.05)
+
+\method{bruesch_pagan_test}{default}(object, ...)
+
+\method{bruesch_pagan_test}{lm}(object, ..., .alpha = 0.05)
+
+\method{bruesch_pagan_test}{`_lm`}(object, ..., .alpha = 0.05)
+
+\method{bruesch_pagan_test}{`_glm`}(object, ..., .alpha = 0.05)
 }
 \arguments{
-\item{object}{a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{further arguments passed to \code{\link[lmtest]{bptest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A wrapper around \code{\link[lmtest]{bptest}} that standardizes the inputs

@@ -2,19 +2,32 @@
 % Please edit documentation in R/linreg-normality.R
 \name{anderson_darling_test}
 \alias{anderson_darling_test}
+\alias{anderson_darling_test.default}
+\alias{anderson_darling_test.lm}
+\alias{anderson_darling_test._lm}
+\alias{anderson_darling_test._glm}
 \title{Run an Anderson-Darling Test}
 \usage{
 anderson_darling_test(object, ..., .alpha = 0.05)
+
+\method{anderson_darling_test}{default}(object, ...)
+
+\method{anderson_darling_test}{lm}(object, ..., .alpha = 0.05)
+
+\method{anderson_darling_test}{`_lm`}(object, ..., .alpha = 0.05)
+
+\method{anderson_darling_test}{`_glm`}(object, ..., .alpha = 0.05)
 }
 \arguments{
-\item{object}{a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{not currently used.}
+\item{...}{Not currently used.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A wrapper around \code{\link[nortest]{ad.test}} that standardizes the

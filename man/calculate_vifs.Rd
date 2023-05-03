@@ -13,7 +13,7 @@ calculate_vifs(object)
 \method{calculate_vifs}{`_lm`}(object)
 }
 \arguments{
-\item{object}{A model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}.

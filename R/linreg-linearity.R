@@ -10,12 +10,13 @@
 #' * Null: Linear Specification is Valid
 #' * Alternative: Linear Specification is Not Valid
 #'
-#' @inheritParams lmtest::resettest
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[lmtest]{resettest}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams bruesch_pagan_test
+#' @param power (Optional) A vector of positive integers indicating the powers
+#'   of the variables that should be included. The default is 2:3, meaning
+#'   quadratic or cubic influence of the fitted response.
+#' @param ... Further arguments passed to \code{\link[lmtest]{resettest}}.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -33,11 +34,13 @@ ramsey_reset_test <- function(object, power = 2:3, ..., .alpha = 0.05) {
   UseMethod("ramsey_reset_test")
 }
 
+#' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test.lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
   tidy_test(
@@ -52,11 +55,13 @@ ramsey_reset_test.lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test._lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
   ramsey_reset_test.lm(object[["fit"]], power = power, ..., .alpha = .alpha)
 }
 
+#' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
   ramsey_reset_test._lm(object, power = power, ..., .alpha = .alpha)
@@ -75,11 +80,10 @@ ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
 #' * Null: True Relationship is Linear
 #' * Alternative: True Relationship is Not Linear (Convex or Concave)
 #'
-#' @param object a model object (such as a fitted `lm` object).
-#' @param ... further arguments passed to \code{\link[lmtest]{harvtest}}.
-#' @param .alpha critical p-value used to determine test conclusion.
+#' @inheritParams bruesch_pagan_test
+#' @param ... Further arguments passed to \code{\link[lmtest]{harvtest}}.
 #'
-#' @return a [tibble][tibble::tibble-package].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @examples
 #' library(dplyr)
@@ -97,11 +101,13 @@ harvey_collier_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("harvey_collier_test")
 }
 
+#' @rdname harvey_collier_test
 #' @export
 harvey_collier_test.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname harvey_collier_test
 #' @export
 harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
   tidy_test(
@@ -115,11 +121,13 @@ harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
   )
 }
 
+#' @rdname harvey_collier_test
 #' @export
 harvey_collier_test._lm <- function(object, ..., .alpha = 0.05) {
   harvey_collier_test.lm(object[["fit"]], ..., .alpha = .alpha)
 }
 
+#' @rdname harvey_collier_test
 #' @export
 harvey_collier_test._glm <- function(object, ..., .alpha = 0.05) {
   harvey_collier_test._lm(object, ..., .alpha = .alpha)
