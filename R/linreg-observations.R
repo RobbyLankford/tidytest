@@ -1,4 +1,4 @@
-# Leverage Points -------------------------------------------------------------
+# Leverage --------------------------------------------------------------------
 
 #' Identify Extreme Leverage Points
 #'
@@ -53,8 +53,6 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
     dplyr::filter(leverage > .cutoff)
 }
 
-
-
 # Outliers -------------------------------------------------------------------
 
 #' Identify Outliers
@@ -100,6 +98,54 @@ identify_outliers <- function(object, id = NULL, .cutoff = 3) {
   std_resids_tbl <- get_standardized_residuals(object, id)
 
   dplyr::filter(std_resids_tbl, std_resid > .cutoff)
+}
+
+# Influential -----------------------------------------------------------------
+
+#' Identify Influential Observations (Using Cook's Distance)
+#'
+#' A data point flagged as an influential observation means that it strongly
+#' influences the fitted values of a regression, taking into account both the
+#' x and y values of the observation.
+#'
+#' @details
+#' Cook's distance is often used to determine if observations are influential.
+#' This function first calculates Cook's distance for each observation and
+#' filters out only those that are above a certain cutoff. A traditional
+#' rule-of-thumb is for that cutoff value to be 0.5.
+#'
+#' @inheritParams identify_extreme_leverages
+#' @param .cutoff (Optional) Used to determine which Cook's distances are
+#'   indicative of an influential observation. The default is the rule-of-thumb
+#'   0.5 (see details).
+#'
+#' @return A [`tibble`][tibble::tibble].
+#'
+#' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
+#'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
+#'   McGraw-Hill/Irwin.
+#'
+#' @examples
+#' library(dplyr)
+#' library(parsnip)
+#' library(tidytest)
+#'
+#' mod_fit <- parsnip::linear_reg() %>%
+#'   set_engine("lm") %>%
+#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' #> No influential observations with default `.cutoff` value
+#' identify_influential_obs(mod_fit)
+#'
+#' #> Try a lower `.cutoff` value
+#' identify_influential_obs(mod_fit, .cutoff = 0.5)
+#' identify_influential_obs(mod_fit, id = rownames(mtcars), .cutoff = 0.1)
+#'
+#' @export
+identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
+  cooks_dist_tbl <- get_cooks_distance(object, id)
+
+  dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
 }
 
 # Utilities -------------------------------------------------------------------
@@ -171,4 +217,19 @@ get_standardized_residuals.lm <- function(object, id = NULL) {
 
 get_standardized_residuals._lm <- function(object, id = NULL) {
   get_standardized_residuals.lm(object[["fit"]], id = id)
+}
+
+#> Calculate Cook's distance of each data point
+get_cooks_distance <- function(object, id = NULL) {
+  UseMethod("get_cooks_distance")
+}
+
+get_cooks_distance.lm <- function(object, id = NULL) {
+  cooks_dist <- as.numeric(stats::cooks.distance(object))
+
+  add_id(cooks_dist, name = "cooks_dist", id = id)
+}
+
+get_cooks_distance._lm <- function(object, id = NULL) {
+  get_cooks_distance.lm(object[["fit"]], id = id)
 }
