@@ -2,11 +2,14 @@
 % Please edit documentation in R/linreg-multicollinearity.R
 \name{calculate_vifs}
 \alias{calculate_vifs}
+\alias{calculate_vifs.default}
 \alias{calculate_vifs.lm}
 \alias{calculate_vifs._lm}
 \title{Calculate Multicollinearity of Variables in a Linear Regression}
 \usage{
 calculate_vifs(object)
+
+\method{calculate_vifs}{default}(object)
 
 \method{calculate_vifs}{lm}(object)
 
@@ -27,10 +30,16 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+calculate_vifs(mod_lm_fit)
+
+#> Tidymodels Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-calculate_vifs(mod_fit)
+calculate_vifs(mod_linreg_fit)
 
 }

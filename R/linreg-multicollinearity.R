@@ -12,11 +12,17 @@
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- linear_reg() %>%
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' calculate_vifs(mod_lm_fit)
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' calculate_vifs(mod_fit)
+#' calculate_vifs(mod_linreg_fit)
 #'
 #' @export
 calculate_vifs <- function(object) {
@@ -25,7 +31,25 @@ calculate_vifs <- function(object) {
 
 #' @rdname calculate_vifs
 #' @export
+calculate_vifs.default <- function(object) {
+  stop("No method for object of class ", class(object))
+}
+
+#' @rdname calculate_vifs
+#' @export
 calculate_vifs.lm <- function(object) {
+  calculate_vifs_spec(object)
+}
+
+#' @rdname calculate_vifs
+#' @export
+calculate_vifs._lm <- function(object) {
+  calculate_vifs_spec(object[["fit"]])
+}
+
+
+# Helper Functions ------------------------------------------------------------
+calculate_vifs_spec <- function(object) {
   vifs <- car::vif(object)
 
   vifs_num <- if (is.matrix(vifs)) vifs[ ,ncol(vifs)] else vifs
@@ -44,10 +68,4 @@ calculate_vifs.lm <- function(object) {
       TRUE     ~ "moderately correlated"
     )
   )
-}
-
-#' @rdname calculate_vifs
-#' @export
-calculate_vifs._lm <- function(object) {
-  calculate_vifs.lm(object[["fit"]])
 }
