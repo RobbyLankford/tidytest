@@ -3,6 +3,7 @@
 \name{shapiro_wilk_test}
 \alias{shapiro_wilk_test}
 \alias{shapiro_wilk_test.default}
+\alias{shapiro_wilk_test.numeric}
 \alias{shapiro_wilk_test.lm}
 \alias{shapiro_wilk_test._lm}
 \alias{shapiro_wilk_test._glm}
@@ -11,6 +12,8 @@
 shapiro_wilk_test(object, ..., .alpha = 0.05)
 
 \method{shapiro_wilk_test}{default}(object, ...)
+
+\method{shapiro_wilk_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{shapiro_wilk_test}{lm}(object, ..., .alpha = 0.05)
 
@@ -25,6 +28,8 @@ shapiro_wilk_test(object, ..., .alpha = 0.05)
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
+
+\item{x}{For numeric method, a vector of residuals.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}.
@@ -45,10 +50,22 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(n = 100)
+
+shapiro_wilk_test(resids)
+
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+shapiro_wilk_test(mod_lm_fit)
+
+#> Tidymodels Method
+mod_linreg_fit <- parsnip::linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-shapiro_wilk_test(mod_fit)
+shapiro_wilk_test(mod_linreg_fit)
 
 }

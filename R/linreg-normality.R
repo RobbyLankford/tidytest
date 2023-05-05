@@ -101,11 +101,23 @@ anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> Numeric Method
+#' set.seed(1914)
+#' resids <- rnorm(n = 100)
+#'
+#' shapiro_wilk_test(resids)
+#'
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' shapiro_wilk_test(mod_lm_fit)
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- parsnip::linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' shapiro_wilk_test(mod_fit)
+#' shapiro_wilk_test(mod_linreg_fit)
 #'
 #' @export
 shapiro_wilk_test <- function(object, ..., .alpha = 0.05) {
@@ -120,30 +132,32 @@ shapiro_wilk_test.default <- function(object, ...) {
 
 #' @rdname shapiro_wilk_test
 #' @export
+shapiro_wilk_test.numeric <- function(x, ..., .alpha = 0.05) {
+  shapiro_wilk_test_spec(x, ..., .alpha = .alpha)
+}
+
+#' @rdname shapiro_wilk_test
+#' @export
 shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
 
-  tidy_test(
-    resids,
-    shapiro.test,
-    ...,
-    .test   = "Shapiro-Wilk",
-    .null   = "Follows a Normal Distribution",
-    .alt    = "Does Not Follow a Normal Distribution",
-    .alpha = .alpha
-  )
+  shapiro_wilk_test_spec(resids, ..., .alpha = 0.05)
 }
 
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
-  shapiro_wilk_test.lm(object[["fit"]], ..., .alpha = .alpha)
+  resids <- get_residuals(object)
+
+  shapiro_wilk_test_spec(resids, ..., .alpha = 0.05)
 }
 
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
-  shapiro_wilk_test._lm(object, ..., .alpha = .alpha)
+  resids <- get_residuals(object)
+
+  shapiro_wilk_test_spec(resids, ..., .alpha = 0.05)
 }
 
 
@@ -154,6 +168,18 @@ anderson_darling_test_spec <- function(resids, ..., .alpha = 0.05) {
     nortest::ad.test,
     ...,
     .test   = "Anderson-Darling",
+    .null   = "Follows a Normal Distribution",
+    .alt    = "Does Not Follow a Normal Distribution",
+    .alpha = .alpha
+  )
+}
+
+shapiro_wilk_test_spec <- function(resids, ..., .alpha = 0.05) {
+  tidy_test(
+    resids,
+    shapiro.test,
+    ...,
+    .test   = "Shapiro-Wilk",
     .null   = "Follows a Normal Distribution",
     .alt    = "Does Not Follow a Normal Distribution",
     .alpha = .alpha
