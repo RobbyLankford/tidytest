@@ -3,6 +3,7 @@
 \name{anderson_darling_test}
 \alias{anderson_darling_test}
 \alias{anderson_darling_test.default}
+\alias{anderson_darling_test.numeric}
 \alias{anderson_darling_test.lm}
 \alias{anderson_darling_test._lm}
 \alias{anderson_darling_test._glm}
@@ -11,6 +12,8 @@
 anderson_darling_test(object, ..., .alpha = 0.05)
 
 \method{anderson_darling_test}{default}(object, ...)
+
+\method{anderson_darling_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{anderson_darling_test}{lm}(object, ..., .alpha = 0.05)
 
@@ -25,6 +28,8 @@ anderson_darling_test(object, ..., .alpha = 0.05)
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
+
+\item{x}{For numeric method, a vector of residuals.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}.
@@ -45,10 +50,22 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(n = 100)
+
+anderson_darling_test(resids)
+
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+anderson_darling_test(mod_lm_fit)
+
+#> Tidymodels Method
+mod_linreg_fit <- parsnip::linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-anderson_darling_test(mod_fit)
+anderson_darling_test(mod_linreg_fit)
 
 }

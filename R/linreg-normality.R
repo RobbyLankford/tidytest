@@ -11,6 +11,7 @@
 #' * Alternative: Does Not Follow a Normal Distribution
 #'
 #' @inheritParams bruesch_pagan_test
+#' @inheritParams ljung_box_test
 #' @param ... Not currently used.
 #'
 #' @return A [tibble][tibble::tibble-package].
@@ -20,11 +21,23 @@
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> Numeric Method
+#' set.seed(1914)
+#' resids <- rnorm(n = 100)
+#'
+#' anderson_darling_test(resids)
+#'
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' anderson_darling_test(mod_lm_fit)
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- parsnip::linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' anderson_darling_test(mod_fit)
+#' anderson_darling_test(mod_linreg_fit)
 #'
 #' @export
 anderson_darling_test <- function(object, ..., .alpha = 0.05) {
@@ -39,30 +52,32 @@ anderson_darling_test.default <- function(object, ...) {
 
 #' @rdname anderson_darling_test
 #' @export
+anderson_darling_test.numeric <- function(x, ..., .alpha = 0.05) {
+  anderson_darling_test_spec(x, ..., .alpha = .alpha)
+}
+
+#' @rdname anderson_darling_test
+#' @export
 anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
 
-  tidy_test(
-    resids,
-    nortest::ad.test,
-    ...,
-    .test   = "Anderson-Darling",
-    .null   = "Follows a Normal Distribution",
-    .alt    = "Does Not Follow a Normal Distribution",
-    .alpha = .alpha
-  )
+  anderson_darling_test_spec(resids, ..., .alpha = .alpha)
 }
 
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
-  anderson_darling_test.lm(object[["fit"]], ..., .alpha = .alpha)
+  resids <- get_residuals(object)
+
+  anderson_darling_test_spec(resids, ..., .alpha = .alpha)
 }
 
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
-  anderson_darling_test._lm(object, ..., .alpha = .alpha)
+  resids <- get_residuals(object)
+
+  anderson_darling_test_spec(resids, ..., .alpha = .alpha)
 }
 
 # Shapiro-Wilk Test -----------------------------------------------------------
@@ -129,4 +144,18 @@ shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
 #' @export
 shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
   shapiro_wilk_test._lm(object, ..., .alpha = .alpha)
+}
+
+
+# Helper Functions ------------------------------------------------------------
+anderson_darling_test_spec <- function(resids, ..., .alpha = 0.05) {
+  tidy_test(
+    resids,
+    nortest::ad.test,
+    ...,
+    .test   = "Anderson-Darling",
+    .null   = "Follows a Normal Distribution",
+    .alt    = "Does Not Follow a Normal Distribution",
+    .alpha = .alpha
+  )
 }
