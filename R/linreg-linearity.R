@@ -90,7 +90,13 @@ ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' harvey_collier_test(mod_lm_fit)
+#'
+#' #> Tidymodels Method
+#' mod_fit <- linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
@@ -110,6 +116,24 @@ harvey_collier_test.default <- function(object, ...) {
 #' @rdname harvey_collier_test
 #' @export
 harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
+  harvey_collier_test_spec(object, ..., .alpha = .alpha)
+}
+
+#' @rdname harvey_collier_test
+#' @export
+harvey_collier_test._lm <- function(object, ..., .alpha = 0.05) {
+  harvey_collier_test_spec(object[["fit"]], ..., .alpha = .alpha)
+}
+
+#' @rdname harvey_collier_test
+#' @export
+harvey_collier_test._glm <- function(object, ..., .alpha = 0.05) {
+  harvey_collier_test_spec(object[["fit"]], ..., .alpha = .alpha)
+}
+
+
+# Helper Functions ------------------------------------------------------------
+harvey_collier_test_spec <- function(object, ..., .alpha = 0.05) {
   tidy_test(
     object,
     lmtest::harvtest,
@@ -119,16 +143,4 @@ harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
     .alt    = "True Relationship is Not Linear (Convex or Concave)",
     .alpha = .alpha
   )
-}
-
-#' @rdname harvey_collier_test
-#' @export
-harvey_collier_test._lm <- function(object, ..., .alpha = 0.05) {
-  harvey_collier_test.lm(object[["fit"]], ..., .alpha = .alpha)
-}
-
-#' @rdname harvey_collier_test
-#' @export
-harvey_collier_test._glm <- function(object, ..., .alpha = 0.05) {
-  harvey_collier_test._lm(object, ..., .alpha = .alpha)
 }

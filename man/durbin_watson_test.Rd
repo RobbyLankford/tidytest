@@ -48,12 +48,20 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+durbin_watson_test(mod_lm_fit)
+durbin_watson_test(mod_lm_fit, alternative = "greater")
+durbin_watson_test(mod_lm_fit, alternative = "less")
+
+#> Tidymodels Method
+mod_linreg_fit <- parsnip::linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-durbin_watson_test(mod_fit)
-durbin_watson_test(mod_fit, alternative = "greater")
-durbin_watson_test(mod_fit, alternative = "two.sided")
+durbin_watson_test(mod_linreg_fit)
+durbin_watson_test(mod_linreg_fit, alternative = "greater")
+durbin_watson_test(mod_linreg_fit, alternative = "less")
 
 }

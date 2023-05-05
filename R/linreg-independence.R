@@ -20,13 +20,21 @@
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' durbin_watson_test(mod_lm_fit)
+#' durbin_watson_test(mod_lm_fit, alternative = "greater")
+#' durbin_watson_test(mod_lm_fit, alternative = "less")
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- parsnip::linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' durbin_watson_test(mod_fit)
-#' durbin_watson_test(mod_fit, alternative = "greater")
-#' durbin_watson_test(mod_fit, alternative = "two.sided")
+#' durbin_watson_test(mod_linreg_fit)
+#' durbin_watson_test(mod_linreg_fit, alternative = "greater")
+#' durbin_watson_test(mod_linreg_fit, alternative = "less")
 #'
 #' @export
 durbin_watson_test <- function(object,
@@ -48,16 +56,7 @@ durbin_watson_test.lm <- function(object,
                                   alternative = "two.sided",
                                   ...,
                                   .alpha = 0.05) {
-  tidy_test(
-    object,
-    lmtest::dwtest,
-    alternative = alternative,
-    ...,
-    .test   = "Durbin-Watson",
-    .null   = "No Autocorrelation",
-    .alt    = "Autocorrelation",
-    .alpha = .alpha
-  )
+  durbin_watson_test_spec(object, alternative, ..., .alpha = .alpha)
 }
 
 #' @rdname durbin_watson_test
@@ -66,9 +65,7 @@ durbin_watson_test._lm <- function(object,
                                    alternative = "two.sided",
                                    ...,
                                   .alpha = 0.05) {
-  durbin_watson_test.lm(
-    object[["fit"]], alternative = alternative, ..., .alpha = .alpha
-  )
+  durbin_watson_test_spec(object[["fit"]], alternative, ..., .alpha = .alpha)
 }
 
 #' @rdname durbin_watson_test
@@ -77,9 +74,7 @@ durbin_watson_test._glm <- function(object,
                                     alternative = "two.sided",
                                     ...,
                                     .alpha = 0.05) {
-  durbin_watson_test._lm(
-    object, alternative = alternative, ..., .alpha = .alpha
-  )
+  durbin_watson_test_spec(object[["fit"]], alternative, ..., .alpha = .alpha)
 }
 
 # Ljung-Box Test --------------------------------------------------------------
@@ -166,6 +161,22 @@ ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
 
 
 # Helper Functions ------------------------------------------------------------
+durbin_watson_test_spec <- function(object,
+                                    alternative = "two.sided",
+                                    ...,
+                                    .alpha = 0.05) {
+  tidy_test(
+    object,
+    lmtest::dwtest,
+    alternative = alternative,
+    ...,
+    .test   = "Durbin-Watson",
+    .null   = "No Autocorrelation",
+    .alt    = "Autocorrelation",
+    .alpha = .alpha
+  )
+}
+
 ljung_box_test_spec <- function(resids, ..., .alpha = 0.05) {
   tidy_test(
     resids,
