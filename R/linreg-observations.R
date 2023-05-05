@@ -38,14 +38,6 @@
 #' identify_extreme_leverages(mod_lm_fit)
 #' identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
 #'
-#' #> Tidymodels Method
-#' mod_linreg_fit <- linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' identify_extreme_leverages(mod_linreg_fit)
-#' identify_extreme_leverages(mod_linreg_fit, id = rownames(mtcars))
-#'
 #' @export
 identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
   UseMethod("identify_extreme_leverages")
@@ -57,14 +49,12 @@ identify_extreme_leverages.default <- function(object, ...) {
   stop("No method for object of class ", class(object))
 }
 
+#' @rdname identify_extreme_leverages
+#' @export
 identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
   identify_extreme_leverages_spec(object, id, .multiplier)
 }
 
-
-identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
-  identify_extreme_leverages_spec(object, id, .multiplier)
-}
 
 # Outliers -------------------------------------------------------------------
 
@@ -95,23 +85,33 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' #> No outliers with default `.cutoff` value
-#' identify_outliers(mod_fit)
+#' ##> No outliers with default `.cutoff` value
+#' identify_outliers(mod_lm_fit)
 #'
-#' #> Try a lower `.cutoff` value
-#' identify_outliers(mod_fit, .cutoff = 2)
-#' identify_outliers(mod_fit, id = rownames(mtcars), .cutoff = 2)
+#' ##> Try a lower `.cutoff` value
+#' identify_outliers(mod_lm_fit, .cutoff = 2)
+#' identify_outliers(mod_lm_fit, id = rownames(mtcars), .cutoff = 2)
 #'
 #' @export
 identify_outliers <- function(object, id = NULL, .cutoff = 3) {
-  std_resids_tbl <- get_standardized_residuals(object, id)
-
-  dplyr::filter(std_resids_tbl, std_resid > .cutoff)
+  UseMethod("identify_outliers")
 }
+
+#' @rdname identify_outliers
+#' @export
+identify_outliers.default <- function(object, ...) {
+  stop("No method for object of class ", class(object))
+}
+
+#' @rdname identify_outliers
+#' @export
+identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
+  identify_outliers_spec(object, id, .cutoff)
+}
+
 
 # Influential -----------------------------------------------------------------
 
@@ -176,7 +176,7 @@ add_id <- function(x, name, id = NULL) {
   out
 }
 
-#> Identify Extreme Leverages
+## Leverage -------------------------------------------------------------------
 identify_extreme_leverages_spec <- function(object, id, .multiplier) {
   leverages_tbl <- calc_leverages(object, id)
   cutoff <- calc_leverage_cutoff(object, .multiplier)
@@ -247,20 +247,30 @@ calc_leverage_cutoff <- function(object, .multiplier) {
   (p / n) * .multiplier
 }
 
+## Outliers -------------------------------------------------------------------
+identify_outliers_spec <- function(object, id, .cutoff) {
+  std_residuals_tbl <- calc_standardized_residuals(object, id)
 
-#> Calculate the standardized residual of each data point
-get_standardized_residuals <- function(object, id = NULL, ...) {
-  UseMethod("get_standardized_residuals")
+  dplyr::filter(std_residuals_tbl, std_resid > .cutoff)
 }
 
-get_standardized_residuals.lm <- function(object, id = NULL) {
+##> Calculate the standardized residual of each data point
+calc_standardized_residuals <- function(object, id = NULL, ...) {
+  UseMethod("calc_standardized_residuals")
+}
+
+calc_standardized_residuals.lm <- function(object, id = NULL) {
+  calc_standardized_residuals_spec(object, id)
+}
+
+calc_standardized_residuals._lm <- function(object, id = NULL) {
+  calc_standardized_residuals_spec(object[["fit"]], id)
+}
+
+calc_standardized_residuals_spec <- function(object, id) {
   std_resids <- as.numeric(stats::rstandard(object))
 
   add_id(std_resids, name = "std_resid", id = id)
-}
-
-get_standardized_residuals._lm <- function(object, id = NULL) {
-  get_standardized_residuals.lm(object[["fit"]], id = id)
 }
 
 #> Calculate Cook's distance of each data point

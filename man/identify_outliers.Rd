@@ -2,9 +2,15 @@
 % Please edit documentation in R/linreg-observations.R
 \name{identify_outliers}
 \alias{identify_outliers}
+\alias{identify_outliers.default}
+\alias{identify_outliers.lm}
 \title{Identify Outliers}
 \usage{
 identify_outliers(object, id = NULL, .cutoff = 3)
+
+\method{identify_outliers}{default}(object, ...)
+
+\method{identify_outliers}{lm}(object, id = NULL, .cutoff = 3)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -16,6 +22,8 @@ the row number will be added as the ID column.}
 \item{.cutoff}{(Optional) Used to determine which standard residuals are
 indicative of an outlier. The default is the rule-of-thumb 3
 (see details).}
+
+\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 }
 \value{
 A \code{\link[tibble:tibble]{tibble}}.
@@ -35,16 +43,15 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
-  set_engine("lm") \%>\%
-  fit(mpg ~ disp + wt + hp, data = mtcars)
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-#> No outliers with default `.cutoff` value
-identify_outliers(mod_fit)
+##> No outliers with default `.cutoff` value
+identify_outliers(mod_lm_fit)
 
-#> Try a lower `.cutoff` value
-identify_outliers(mod_fit, .cutoff = 2)
-identify_outliers(mod_fit, id = rownames(mtcars), .cutoff = 2)
+##> Try a lower `.cutoff` value
+identify_outliers(mod_lm_fit, .cutoff = 2)
+identify_outliers(mod_lm_fit, id = rownames(mtcars), .cutoff = 2)
 
 }
 \references{

@@ -3,11 +3,14 @@
 \name{identify_extreme_leverages}
 \alias{identify_extreme_leverages}
 \alias{identify_extreme_leverages.default}
+\alias{identify_extreme_leverages.lm}
 \title{Identify Extreme Leverage Points}
 \usage{
 identify_extreme_leverages(object, id = NULL, .multiplier = 3)
 
-identify_extreme_leverages.default(object, ...)
+\method{identify_extreme_leverages}{default}(object, ...)
+
+\method{identify_extreme_leverages}{lm}(object, id = NULL, .multiplier = 3)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -47,14 +50,6 @@ mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 identify_extreme_leverages(mod_lm_fit)
 identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
-
-#> Tidymodels Method
-mod_linreg_fit <- linear_reg() \%>\%
-  set_engine("lm") \%>\%
-  fit(mpg ~ disp + wt + hp, data = mtcars)
-
-identify_extreme_leverages(mod_linreg_fit)
-identify_extreme_leverages(mod_linreg_fit, id = rownames(mtcars))
 
 }
 \references{
