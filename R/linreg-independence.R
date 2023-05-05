@@ -94,6 +94,7 @@ durbin_watson_test._glm <- function(object,
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
+#' @param x For numeric method, a vector of residuals.
 #' @inheritParams bruesch_pagan_test
 #' @param ... Further arguments passed to \code{\link[stats]{Box.test}}.
 #'
@@ -104,11 +105,23 @@ durbin_watson_test._glm <- function(object,
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> Numeric Method
+#' set.seed(1914)
+#' resids <- rnorm(n = 100)
+#'
+#' ljung_box_test(resids)
+#'
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' ljung_box_test(mod_lm_fit)
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- parsnip::linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' ljung_box_test(mod_fit)
+#' ljung_box_test(mod_linreg_fit)
 #'
 #' @export
 ljung_box_test <- function(object, ..., .alpha = 0.05) {
@@ -123,9 +136,37 @@ ljung_box_test.default <- function(object, ...) {
 
 #' @rdname ljung_box_test
 #' @export
+ljung_box_test.numeric <- function(x, ..., .alpha = 0.05) {
+  ljung_box_test_spec(x, ..., .alpha = .alpha)
+}
+
+#' @rdname ljung_box_test
+#' @export
 ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
   resids <- get_residuals(object)
 
+  ljung_box_test_spec(resids, ..., .alpha = .alpha)
+}
+
+#' @rdname ljung_box_test
+#' @export
+ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
+  resids <- get_residuals(object)
+
+  ljung_box_test_spec(resids, ..., .alpha = .alpha)
+}
+
+#' @rdname ljung_box_test
+#' @export
+ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
+  resids <- get_residuals(object)
+
+  ljung_box_test_spec(resids, ..., .alpha = .alpha)
+}
+
+
+# Helper Functions ------------------------------------------------------------
+ljung_box_test_spec <- function(resids, ..., .alpha = 0.05) {
   tidy_test(
     resids,
     Box.test,
@@ -136,16 +177,4 @@ ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
     .alt    = "Autocorrelation",
     .alpha = .alpha
   )
-}
-
-#' @rdname ljung_box_test
-#' @export
-ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
-  ljung_box_test.lm(object[["fit"]], ..., .alpha = .alpha)
-}
-
-#' @rdname ljung_box_test
-#' @export
-ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
-  ljung_box_test._lm(object, ..., .alpha = .alpha)
 }

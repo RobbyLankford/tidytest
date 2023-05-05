@@ -3,6 +3,7 @@
 \name{ljung_box_test}
 \alias{ljung_box_test}
 \alias{ljung_box_test.default}
+\alias{ljung_box_test.numeric}
 \alias{ljung_box_test.lm}
 \alias{ljung_box_test._lm}
 \alias{ljung_box_test._glm}
@@ -11,6 +12,8 @@
 ljung_box_test(object, ..., .alpha = 0.05)
 
 \method{ljung_box_test}{default}(object, ...)
+
+\method{ljung_box_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{ljung_box_test}{lm}(object, ..., .alpha = 0.05)
 
@@ -25,6 +28,8 @@ ljung_box_test(object, ..., .alpha = 0.05)
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
+
+\item{x}{For numeric method, a vector of residuals.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}.
@@ -45,10 +50,22 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(n = 100)
+
+ljung_box_test(resids)
+
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+ljung_box_test(mod_lm_fit)
+
+#> Tidymodels Method
+mod_linreg_fit <- parsnip::linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-ljung_box_test(mod_fit)
+ljung_box_test(mod_linreg_fit)
 
 }
