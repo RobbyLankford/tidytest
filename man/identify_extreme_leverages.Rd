@@ -2,9 +2,12 @@
 % Please edit documentation in R/linreg-observations.R
 \name{identify_extreme_leverages}
 \alias{identify_extreme_leverages}
+\alias{identify_extreme_leverages.default}
 \title{Identify Extreme Leverage Points}
 \usage{
 identify_extreme_leverages(object, id = NULL, .multiplier = 3)
+
+identify_extreme_leverages.default(object, ...)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -16,6 +19,8 @@ the row number will be added as the ID column.}
 \item{.multiplier}{(Optional) Used to determine which leverages are
 considered to be "extreme". The default is the rule-of-thumb 3
 (see details).}
+
+\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 }
 \value{
 A \code{\link[tibble:tibble]{tibble}}.
@@ -37,12 +42,19 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+identify_extreme_leverages(mod_lm_fit)
+identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
+
+#> Tidymodels Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-identify_extreme_leverages(mod_fit)
-identify_extreme_leverages(mod_fit, id = rownames(mtcars))
+identify_extreme_leverages(mod_linreg_fit)
+identify_extreme_leverages(mod_linreg_fit, id = rownames(mtcars))
 
 }
 \references{

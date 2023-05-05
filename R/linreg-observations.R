@@ -32,25 +32,38 @@
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+#'
+#' identify_extreme_leverages(mod_lm_fit)
+#' identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
+#'
+#' #> Tidymodels Method
+#' mod_linreg_fit <- linear_reg() %>%
 #'   set_engine("lm") %>%
 #'   fit(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' identify_extreme_leverages(mod_fit)
-#' identify_extreme_leverages(mod_fit, id = rownames(mtcars))
+#' identify_extreme_leverages(mod_linreg_fit)
+#' identify_extreme_leverages(mod_linreg_fit, id = rownames(mtcars))
 #'
 #' @export
 identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
-  leverages_tbl <- get_leverages(object, id)
+  UseMethod("identify_extreme_leverages")
+}
 
-  p <- get_num_coefs(object)
-  n <- get_num_obs(object)
+#' @rdname identify_extreme_leverages
+#' @export
+identify_extreme_leverages.default <- function(object, ...) {
+  stop("No method for object of class ", class(object))
+}
 
-  cutoff <- (p / n) * .multiplier
+identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
+  identify_extreme_leverages_spec(object, id, .multiplier)
+}
 
-  leverages_tbl %>%
-    dplyr::mutate(.cutoff = cutoff) %>%
-    dplyr::filter(leverage > .cutoff)
+
+identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
+  identify_extreme_leverages_spec(object, id, .multiplier)
 }
 
 # Outliers -------------------------------------------------------------------
@@ -148,33 +161,7 @@ identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
   dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
 }
 
-# Utilities -------------------------------------------------------------------
-
-#> Number of coefficients in a model
-get_num_coefs <- function(object, ...) {
-  UseMethod("get_num_coefs")
-}
-
-get_num_coefs.lm <- function(object) {
-  length(stats::coef(object))
-}
-
-get_num_coefs._lm <- function(object) {
-  length(stats::coef(object[["fit"]]))
-}
-
-#> Number of observations used to build a model
-get_num_obs <- function(object, ...) {
-  UseMethod("get_num_obs")
-}
-
-get_num_obs.lm <- function(object) {
-  nrow(object[["model"]])
-}
-
-get_num_obs._lm <- function(object) {
-  nrow(object[["fit"]][["model"]])
-}
+# Helper Functions ------------------------------------------------------------
 
 #> Add an ID column when converting to a tibble
 add_id <- function(x, name, id = NULL) {
@@ -189,20 +176,77 @@ add_id <- function(x, name, id = NULL) {
   out
 }
 
-#> Calculate leverage of each data point
-get_leverages <- function(object, id = NULL, ...) {
-  UseMethod("get_leverages")
+#> Identify Extreme Leverages
+identify_extreme_leverages_spec <- function(object, id, .multiplier) {
+  leverages_tbl <- calc_leverages(object, id)
+  cutoff <- calc_leverage_cutoff(object, .multiplier)
+
+  leverages_tbl %>%
+    dplyr::mutate(.cutoff = cutoff) %>%
+    dplyr::filter(leverage > .cutoff)
 }
 
-get_leverages.lm <- function(object, id = NULL) {
+##> Calculate leverage of each data point
+calc_leverages <- function(object, id = NULL, ...) {
+  UseMethod("calc_leverages")
+}
+
+calc_leverages.lm <- function(object, id = NULL) {
+  calc_leverages_spec(object, id = id)
+}
+
+calc_leverages._lm <- function(object, id = NULL) {
+  calc_leverages_spec(object[["fit"]], id = id)
+}
+
+calc_leverages_spec <- function(object, id = NULL) {
   leverages <- as.numeric(stats::influence(object)[["hat"]])
 
   add_id(leverages, name = "leverage", id = id)
 }
 
-get_leverages._lm <- function(object, id = NULL) {
-  get_leverages.lm(object[["fit"]], id = id)
+##> Number of coefficients in a model
+calc_num_coefs <- function(object, ...) {
+  UseMethod("calc_num_coefs")
 }
+
+calc_num_coefs.lm <- function(object) {
+  calc_num_coefs_spec(object)
+}
+
+calc_num_coefs._lm <- function(object) {
+  calc_num_coefs_spec(object[["fit"]])
+}
+
+calc_num_coefs_spec <- function(object) {
+  length(stats::coef(object))
+}
+
+##> Number of observations used to build a model
+calc_num_obs <- function(object, ...) {
+  UseMethod("calc_num_obs")
+}
+
+calc_num_obs.lm <- function(object) {
+  calc_num_obs_spec(object)
+}
+
+calc_num_obs._lm <- function(object) {
+  calc_num_obs_spec(object[["fit"]])
+}
+
+calc_num_obs_spec <- function(object) {
+  stats::nobs(object)
+}
+
+##> Calculate leverage cutoff
+calc_leverage_cutoff <- function(object, .multiplier) {
+  p <- calc_num_coefs(object)
+  n <- calc_num_obs(object)
+
+  (p / n) * .multiplier
+}
+
 
 #> Calculate the standardized residual of each data point
 get_standardized_residuals <- function(object, id = NULL, ...) {
