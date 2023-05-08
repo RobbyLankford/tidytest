@@ -143,23 +143,33 @@ identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' #> No influential observations with default `.cutoff` value
-#' identify_influential_obs(mod_fit)
+#' ##> No influential observations with default `.cutoff` value
+#' identify_influential_obs(mod_lm_fit)
 #'
-#' #> Try a lower `.cutoff` value
-#' identify_influential_obs(mod_fit, .cutoff = 0.5)
-#' identify_influential_obs(mod_fit, id = rownames(mtcars), .cutoff = 0.1)
+#' ##> Try a lower `.cutoff` value
+#' identify_influential_obs(mod_lm_fit, .cutoff = 0.1)
+#' identify_influential_obs(mod_lm_fit, id = rownames(mtcars), .cutoff = 0.1)
 #'
 #' @export
 identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
-  cooks_dist_tbl <- get_cooks_distance(object, id)
-
-  dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
+  UseMethod("identify_influential_obs")
 }
+
+#' @rdname identify_influential_obs
+#' @export
+identify_influential_obs.default <- function(object, ...) {
+  stop("No method for object of class ", class(object))
+}
+
+#' @rdname identify_influential_obs
+#' @export
+identify_influential_obs.lm <- function(object, id = NULL, .cutoff = 0.5) {
+  identify_influential_obs_spec(object, id, .cutoff)
+}
+
 
 # Helper Functions ------------------------------------------------------------
 
@@ -273,7 +283,14 @@ calc_standardized_residuals_spec <- function(object, id) {
   add_id(std_resids, name = "std_resid", id = id)
 }
 
-#> Calculate Cook's distance of each data point
+## Influential ----------------------------------------------------------------
+identify_influential_obs_spec <- function(object, id, .cutoff) {
+  cooks_dist_tbl <- get_cooks_distance(object, id)
+
+  dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
+}
+
+##> Calculate Cook's distance of each data point
 get_cooks_distance <- function(object, id = NULL) {
   UseMethod("get_cooks_distance")
 }
