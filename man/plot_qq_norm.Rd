@@ -2,16 +2,15 @@
 % Please edit documentation in R/linreg-plots.R
 \name{plot_qq_norm}
 \alias{plot_qq_norm}
+\alias{plot_qq_norm.lm}
 \title{Create a Quantile-Quantile (Q-Q) Plot}
 \usage{
-plot_qq_norm(object, data)
+plot_qq_norm(object)
+
+\method{plot_qq_norm}{lm}(object)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
-
-\item{data}{A data set (\code{\link[base:data.frame]{data.frame}} or
-\code{\link[tibble:tibble]{tibble}}) used to calculate predicted values and
-residuals (likely want to use the data off of which the model was built).}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot}} object.
@@ -29,11 +28,10 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
-  set_engine("lm") \%>\%
-  fit(mpg ~ disp + wt + hp, data = mtcars)
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-plot_qq_norm(mod_fit, mtcars)
+plot_qq_norm(mod_lm_fit)
 
 }
 \references{

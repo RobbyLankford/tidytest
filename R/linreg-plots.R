@@ -9,10 +9,7 @@
 #' pattern, then either or both of the assumptions are likely violated.
 #'
 #' @inheritParams bruesch_pagan_test
-#' @param data A data set ([`data.frame`][base::data.frame] or
-#'   [`tibble`][tibble::tibble]) used to calculate predicted values and
-#'   residuals (likely want to use the data off of which the model was built).
-#' @param .origin (Optional) The `linetype` of the line drawn at the `y = 0`.
+#' @param .hline (Optional) The `linetype` of the line drawn at the `y = 0`.
 #'
 #' @return A [`ggplot`][ggplot2::ggplot] object.
 #'
@@ -25,20 +22,22 @@
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' plot_pred_vs_resid(mod_fit, mtcars)
+#' plot_pred_vs_resid(mod_lm_fit)
 #'
 #' @export
-plot_pred_vs_resid <- function(object, data, .origin = "dashed") {
+plot_pred_vs_resid <- function(object, .hline = "dashed") {
+  UseMethod("plot_pred_vs_resid")
+}
+
+#' @rdname plot_pred_vs_resid
+#' @export
+plot_pred_vs_resid.lm <- function(object, .hline = "dashed") {
   object %>%
-    get_preds_vs_resid(data) %>%
-    ggplot2::ggplot(ggplot2::aes(x = .pred, y = .resid)) +
-    ggplot2::geom_point() +
-    ggplot2::geom_hline(ggplot2::aes(yintercept = 0), linetype = .origin) +
-    ggplot2::labs(x = "Predictions", y = "Residuals")
+    get_preds_vs_resid() %>%
+    plot_pred_vs_resid_(.hline = .hline)
 }
 
 # Q-Q Plot --------------------------------------------------------------------
@@ -65,31 +64,49 @@ plot_pred_vs_resid <- function(object, data, .origin = "dashed") {
 #' library(parsnip)
 #' library(tidytest)
 #'
-#' mod_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
+#' #> `lm` Method
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' plot_qq_norm(mod_fit, mtcars)
+#' plot_qq_norm(mod_lm_fit)
 #'
 #' @export
-plot_qq_norm <- function(object, data) {
-  object %>%
-    get_resid() %>%
-    ggplot2::ggplot(ggplot2::aes(sample = .resid)) +
-    qqplotr::stat_qq_band() +
-    qqplotr::stat_qq_line() +
-    qqplotr::stat_qq_point() +
-    ggplot2::labs(x = "Theoretical Quantiles", y = "Sample Quantiles")
+plot_qq_norm <- function(object) {
+  UseMethod("plot_qq_norm")
 }
 
+#' @rdname plot_qq_norm
+#' @export
+plot_qq_norm.lm <- function(object) {
+  object %>%
+    get_resid() %>%
+    plot_qq_norm_()
+}
+
+
 # Helpers ---------------------------------------------------------------------
-get_preds_vs_resid <- function(object, data) {
+get_preds_vs_resid <- function(object, ...) {
   dplyr::tibble(
-    .pred = get_predictions(object, data),
+    .pred = get_predictions(object, ...),
     .resid = get_residuals(object)
   )
 }
 
 get_resid <- function(object) {
   dplyr::tibble(.resid = get_residuals(object))
+}
+
+plot_pred_vs_resid_ <- function(.data, .hline) {
+  .data %>%
+    ggplot2::ggplot(ggplot2::aes(x = .pred, y = .resid)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_hline(ggplot2::aes(yintercept = 0), linetype = .hline) +
+    ggplot2::labs(x = "Predictions", y = "Residuals")
+}
+
+plot_qq_norm_ <- function(.data) {
+  ggplot2::ggplot(data = .data, mapping = ggplot2::aes(sample = .resid)) +
+    qqplotr::stat_qq_band() +
+    qqplotr::stat_qq_line() +
+    qqplotr::stat_qq_point() +
+    ggplot2::labs(x = "Theoretical Quantiles", y = "Sample Quantiles")
 }

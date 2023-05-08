@@ -4,7 +4,16 @@ get_predictions <- function(object, data, ...) {
 
 # Base R ----------------------------------------------------------------------
 
-## `lm()` & `glm()` ----
+## `lm()` ----
+get_predictions.lm <- function(object, data = NULL) {
+  if (rlang::is_null(data)) {
+    data <- object[["model"]]
+  }
+
+  as.numeric(stats::predict(object, data))
+}
+
+## `glm()` ----
 get_predictions.lm <- function(object, data) {
   as.numeric(stats::predict(object, data))
 }

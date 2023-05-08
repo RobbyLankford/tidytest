@@ -2,18 +2,17 @@
 % Please edit documentation in R/linreg-plots.R
 \name{plot_pred_vs_resid}
 \alias{plot_pred_vs_resid}
+\alias{plot_pred_vs_resid.lm}
 \title{Create a Plot of Predictors vs Residuals}
 \usage{
-plot_pred_vs_resid(object, data, .origin = "dashed")
+plot_pred_vs_resid(object, .hline = "dashed")
+
+\method{plot_pred_vs_resid}{lm}(object, .hline = "dashed")
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{data}{A data set (\code{\link[base:data.frame]{data.frame}} or
-\code{\link[tibble:tibble]{tibble}}) used to calculate predicted values and
-residuals (likely want to use the data off of which the model was built).}
-
-\item{.origin}{(Optional) The \code{linetype} of the line drawn at the \code{y = 0}.}
+\item{.hline}{(Optional) The \code{linetype} of the line drawn at the \code{y = 0}.}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot}} object.
@@ -30,11 +29,10 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
-  set_engine("lm") \%>\%
-  fit(mpg ~ disp + wt + hp, data = mtcars)
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-plot_pred_vs_resid(mod_fit, mtcars)
+plot_pred_vs_resid(mod_lm_fit)
 
 }
 \references{
