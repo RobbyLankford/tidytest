@@ -2,15 +2,12 @@
 % Please edit documentation in R/linreg-linearity.R
 \name{ramsey_reset_test}
 \alias{ramsey_reset_test}
-\alias{ramsey_reset_test.default}
 \alias{ramsey_reset_test.lm}
 \alias{ramsey_reset_test._lm}
 \alias{ramsey_reset_test._glm}
 \title{Run a Ramsey's Regression Equation Specification Error Test (RESET)}
 \usage{
 ramsey_reset_test(object, power = 2:3, ..., .alpha = 0.05)
-
-\method{ramsey_reset_test}{default}(object, ...)
 
 \method{ramsey_reset_test}{lm}(object, power = 2:3, ..., .alpha = 0.05)
 
@@ -25,17 +22,17 @@ ramsey_reset_test(object, power = 2:3, ..., .alpha = 0.05)
 of the variables that should be included. The default is 2:3, meaning
 quadratic or cubic influence of the fitted response.}
 
-\item{...}{Further arguments passed to \code{\link[lmtest]{resettest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest:resettest]{lmtest::resettest()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[lmtest]{resettest}} that standardizes the
-inputs and outputs.
+A wrapper around \code{\link[lmtest:resettest]{lmtest::resettest()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -49,10 +46,20 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+ramsey_reset_test(mod_lm_fit)
+
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-ramsey_reset_test(mod_fit)
-
+ramsey_reset_test(mod_linreg_fit)
 }
+\seealso{
+Other linearity tests: 
+\code{\link{harvey_collier_test}()}
+}
+\concept{linearity tests}

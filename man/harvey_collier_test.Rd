@@ -2,15 +2,12 @@
 % Please edit documentation in R/linreg-linearity.R
 \name{harvey_collier_test}
 \alias{harvey_collier_test}
-\alias{harvey_collier_test.default}
 \alias{harvey_collier_test.lm}
 \alias{harvey_collier_test._lm}
 \alias{harvey_collier_test._glm}
 \title{Run a Harvey-Collier Test}
 \usage{
 harvey_collier_test(object, ..., .alpha = 0.05)
-
-\method{harvey_collier_test}{default}(object, ...)
 
 \method{harvey_collier_test}{lm}(object, ..., .alpha = 0.05)
 
@@ -21,17 +18,17 @@ harvey_collier_test(object, ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{Further arguments passed to \code{\link[lmtest]{harvtest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest:harvtest]{lmtest::harvtest()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[lmtest]{harvtest}} that standardizes the
-inputs and outputs.
+A wrapper around \code{\link[lmtest:harvtest]{lmtest::harvtest()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -50,11 +47,15 @@ mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 harvey_collier_test(mod_lm_fit)
 
-#> Tidymodels Method
-mod_fit <- linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-harvey_collier_test(mod_fit)
-
+harvey_collier_test(mod_linreg_fit)
 }
+\seealso{
+Other linearity tests: 
+\code{\link{ramsey_reset_test}()}
+}
+\concept{linearity tests}
