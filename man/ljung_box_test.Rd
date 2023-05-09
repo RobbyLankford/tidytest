@@ -21,7 +21,7 @@ ljung_box_test_vec(x, ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{Further arguments passed to \code{\link[stats]{Box.test}}.}
+\item{...}{Further arguments passed to \code{\link[stats:box.test]{stats::Box.test()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
@@ -33,8 +33,7 @@ A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic
 \code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[stats]{Box.test}} that standardizes the inputs
-and outputs.
+A wrapper around \code{\link[stats:box.test]{stats::Box.test()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:

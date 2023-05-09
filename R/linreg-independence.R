@@ -2,19 +2,20 @@
 
 #' Run a Durbin-Watston Test
 #'
-#' A wrapper around \code{\link[lmtest]{dwtest}} that standardizes the inputs
-#' and outputs.
-#'
+#' @details
 #' The hypotheses for this test are:
 #'
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
+#' @templateVar link lmtest::dwtest
+#' @template desc-linreg-tests
+#'
 #' @family independence tests
 #' @template return
 #'
 #' @template params-linreg
-#' @param ... Further arguments passed to \code{\link[lmtest]{dwtest}}.
+#' @template params-dots
 #'
 #' @templateVar fn durbin_watson_test
 #' @template examples-linreg-tests
@@ -54,24 +55,26 @@ durbin_watson_test._glm <- function(object,
   durbin_watson_test_spec(object[["fit"]], alternative, ..., .alpha = .alpha)
 }
 
+
 # Ljung-Box Test --------------------------------------------------------------
 
 #' Run a Ljung-Box Test
 #'
-#' A wrapper around \code{\link[stats]{Box.test}} that standardizes the inputs
-#' and outputs.
-#'
+#' @details
 #' The hypotheses for this test are:
 #'
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
+#'
+#' @templateVar link stats::Box.test
+#' @template desc-linreg-tests
 #'
 #' @family independence tests
 #' @template return
 #'
 #' @template params-linreg
 #' @template params-linreg-vec
-#' @param ... Further arguments passed to \code{\link[stats]{Box.test}}.
+#' @template params-dots
 #'
 #' @templateVar fn ljung_box_test
 #' @template examples-linreg-tests
