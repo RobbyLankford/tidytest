@@ -10,31 +10,14 @@
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
-#' @inheritParams goldfeld_quandt_test
+#' @family independence tests
+#' @template return
+#'
+#' @template params-linreg
 #' @param ... Further arguments passed to \code{\link[lmtest]{dwtest}}.
 #'
-#' @return A [tibble][tibble::tibble-package].
-#'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' durbin_watson_test(mod_lm_fit)
-#' durbin_watson_test(mod_lm_fit, alternative = "greater")
-#' durbin_watson_test(mod_lm_fit, alternative = "less")
-#'
-#' #> Tidymodels Method
-#' mod_linreg_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' durbin_watson_test(mod_linreg_fit)
-#' durbin_watson_test(mod_linreg_fit, alternative = "greater")
-#' durbin_watson_test(mod_linreg_fit, alternative = "less")
+#' @templateVar fn durbin_watson_test
+#' @template examples-linreg-tests
 #'
 #' @export
 durbin_watson_test <- function(object,
@@ -42,12 +25,6 @@ durbin_watson_test <- function(object,
                                ...,
                               .alpha = 0.05) {
   UseMethod("durbin_watson_test")
-}
-
-#' @rdname durbin_watson_test
-#' @export
-durbin_watson_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
 }
 
 #' @rdname durbin_watson_test
@@ -89,50 +66,20 @@ durbin_watson_test._glm <- function(object,
 #' * Null: No Autocorrelation
 #' * Alternative: Autocorrelation
 #'
-#' @param x For numeric method, a vector of residuals.
-#' @inheritParams bruesch_pagan_test
+#' @family independence tests
+#' @template return
+#'
+#' @template params-linreg
+#' @template params-linreg-vec
 #' @param ... Further arguments passed to \code{\link[stats]{Box.test}}.
 #'
-#' @return A [tibble][tibble::tibble-package].
-#'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> Numeric Method
-#' set.seed(1914)
-#' resids <- rnorm(n = 100)
-#'
-#' ljung_box_test(resids)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' ljung_box_test(mod_lm_fit)
-#'
-#' #> Tidymodels Method
-#' mod_linreg_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' ljung_box_test(mod_linreg_fit)
+#' @templateVar fn ljung_box_test
+#' @template examples-linreg-tests
+#' @template examples-linreg-tests-vec
 #'
 #' @export
 ljung_box_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("ljung_box_test")
-}
-
-#' @rdname ljung_box_test
-#' @export
-ljung_box_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
-}
-
-#' @rdname ljung_box_test
-#' @export
-ljung_box_test.numeric <- function(x, ..., .alpha = 0.05) {
-  ljung_box_test_spec(x, ..., .alpha = .alpha)
 }
 
 #' @rdname ljung_box_test
@@ -159,6 +106,12 @@ ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
   ljung_box_test_spec(resids, ..., .alpha = .alpha)
 }
 
+#' @rdname ljung_box_test
+#' @export
+ljung_box_test_vec <- function(x, ..., .alpha = 0.05) {
+  ljung_box_test_spec(x, ..., .alpha = .alpha)
+}
+
 
 # Helper Functions ------------------------------------------------------------
 durbin_watson_test_spec <- function(object,
@@ -170,9 +123,9 @@ durbin_watson_test_spec <- function(object,
     lmtest::dwtest,
     alternative = alternative,
     ...,
-    .test   = "Durbin-Watson",
-    .null   = "No Autocorrelation",
-    .alt    = "Autocorrelation",
+    .test  = "Durbin-Watson",
+    .null  = "No Autocorrelation",
+    .alt   = "Autocorrelation",
     .alpha = .alpha
   )
 }
@@ -183,9 +136,9 @@ ljung_box_test_spec <- function(resids, ..., .alpha = 0.05) {
     Box.test,
     type = "Ljung-Box",
     ...,
-    .test   = "Ljung-Box",
-    .null   = "No Autocorrelation",
-    .alt    = "Autocorrelation",
+    .test  = "Ljung-Box",
+    .null  = "No Autocorrelation",
+    .alt   = "Autocorrelation",
     .alpha = .alpha
   )
 }

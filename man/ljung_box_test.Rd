@@ -2,24 +2,21 @@
 % Please edit documentation in R/linreg-independence.R
 \name{ljung_box_test}
 \alias{ljung_box_test}
-\alias{ljung_box_test.default}
-\alias{ljung_box_test.numeric}
 \alias{ljung_box_test.lm}
 \alias{ljung_box_test._lm}
 \alias{ljung_box_test._glm}
+\alias{ljung_box_test_vec}
 \title{Run a Ljung-Box Test}
 \usage{
 ljung_box_test(object, ..., .alpha = 0.05)
-
-\method{ljung_box_test}{default}(object, ...)
-
-\method{ljung_box_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{ljung_box_test}{lm}(object, ..., .alpha = 0.05)
 
 \method{ljung_box_test}{`_lm`}(object, ..., .alpha = 0.05)
 
 \method{ljung_box_test}{`_glm`}(object, ..., .alpha = 0.05)
+
+ljung_box_test_vec(x, ..., .alpha = 0.05)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -29,10 +26,11 @@ ljung_box_test(object, ..., .alpha = 0.05)
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 
-\item{x}{For numeric method, a vector of residuals.}
+\item{x}{For \verb{_vec()} functions, a numeric vector.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
 A wrapper around \code{\link[stats]{Box.test}} that standardizes the inputs
@@ -50,22 +48,26 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-#> Numeric Method
-set.seed(1914)
-resids <- rnorm(n = 100)
-
-ljung_box_test(resids)
-
 #> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 ljung_box_test(mod_lm_fit)
 
-#> Tidymodels Method
-mod_linreg_fit <- parsnip::linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
 ljung_box_test(mod_linreg_fit)
 
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(100)
+
+ljung_box_test_vec(resids)
 }
+\seealso{
+Other independence tests: 
+\code{\link{durbin_watson_test}()}
+}
+\concept{independence tests}

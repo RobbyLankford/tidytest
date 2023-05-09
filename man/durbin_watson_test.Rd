@@ -2,15 +2,12 @@
 % Please edit documentation in R/linreg-independence.R
 \name{durbin_watson_test}
 \alias{durbin_watson_test}
-\alias{durbin_watson_test.default}
 \alias{durbin_watson_test.lm}
 \alias{durbin_watson_test._lm}
 \alias{durbin_watson_test._glm}
 \title{Run a Durbin-Watston Test}
 \usage{
 durbin_watson_test(object, alternative = "two.sided", ..., .alpha = 0.05)
-
-\method{durbin_watson_test}{default}(object, ...)
 
 \method{durbin_watson_test}{lm}(object, alternative = "two.sided", ..., .alpha = 0.05)
 
@@ -21,16 +18,14 @@ durbin_watson_test(object, alternative = "two.sided", ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{alternative}{The alternative hypothesis, one of "two.sided" (default),
-"greater", or "less".}
-
 \item{...}{Further arguments passed to \code{\link[lmtest]{dwtest}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
 A wrapper around \code{\link[lmtest]{dwtest}} that standardizes the inputs
@@ -52,16 +47,16 @@ library(tidytest)
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 durbin_watson_test(mod_lm_fit)
-durbin_watson_test(mod_lm_fit, alternative = "greater")
-durbin_watson_test(mod_lm_fit, alternative = "less")
 
-#> Tidymodels Method
-mod_linreg_fit <- parsnip::linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
 durbin_watson_test(mod_linreg_fit)
-durbin_watson_test(mod_linreg_fit, alternative = "greater")
-durbin_watson_test(mod_linreg_fit, alternative = "less")
-
 }
+\seealso{
+Other independence tests: 
+\code{\link{ljung_box_test}()}
+}
+\concept{independence tests}
