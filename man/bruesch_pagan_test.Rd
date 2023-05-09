@@ -2,15 +2,12 @@
 % Please edit documentation in R/linreg-homoscedasticity.R
 \name{bruesch_pagan_test}
 \alias{bruesch_pagan_test}
-\alias{bruesch_pagan_test.default}
 \alias{bruesch_pagan_test.lm}
 \alias{bruesch_pagan_test._lm}
 \alias{bruesch_pagan_test._glm}
 \title{Run a Bruesch-Pagan Test}
 \usage{
 bruesch_pagan_test(object, ..., .alpha = 0.05)
-
-\method{bruesch_pagan_test}{default}(object, ...)
 
 \method{bruesch_pagan_test}{lm}(object, ..., .alpha = 0.05)
 
@@ -21,17 +18,17 @@ bruesch_pagan_test(object, ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
+\item{...}{Further arguments passed to \code{\link[lmtest:bptest]{lmtest::bptest()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[lmtest]{bptest}} that standardizes the inputs
-and outputs.
+A wrapper around \code{\link[lmtest:bptest]{lmtest::bptest()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -50,11 +47,15 @@ mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 bruesch_pagan_test(mod_lm_fit)
 
-#> Tidymodels Method
-mod_fit <- linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-bruesch_pagan_test(mod_fit)
-
+bruesch_pagan_test(mod_linreg_fit)
 }
+\seealso{
+Other homoscedasticity tests: 
+\code{\link{goldfeld_quandt_test}()}
+}
+\concept{homoscedasticity tests}

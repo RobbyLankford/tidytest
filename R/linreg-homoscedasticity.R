@@ -2,47 +2,27 @@
 
 #' Run a Bruesch-Pagan Test
 #'
-#' A wrapper around \code{\link[lmtest]{bptest}} that standardizes the inputs
-#' and outputs.
-#'
+#' @details
 #' The hypotheses for this test are:
 #'
 #' * Null: Variances are Equal (Homoscedastic)
 #' * Alternative: Variances are Not Equal (Heteroscedastic)
 #'
-#' @param object A model object (such as a fitted [`lm`][stats::lm] object).
-#' @param ... Further arguments passed to \code{\link[lmtest]{bptest}}.
-#' @param .alpha (Optional) Critical p-value used to determine test conclusion.
-#'   The default is 0.05 (5%).
+#' @templateVar link lmtest::bptest
+#' @template desc-linreg-tests
 #'
-#' @return A [tibble][tibble::tibble-package].
+#' @family homoscedasticity tests
+#' @template return
 #'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
+#' @template params-linreg
+#' @template params-dots
 #'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' bruesch_pagan_test(mod_lm_fit)
-#'
-#' #> Tidymodels Method
-#' mod_fit <- linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' bruesch_pagan_test(mod_fit)
+#' @templateVar fn bruesch_pagan_test
+#' @template examples-linreg-tests
 #'
 #' @export
 bruesch_pagan_test <- function(object, ..., .alpha = 0.05) {
   UseMethod("bruesch_pagan_test")
-}
-
-#' @rdname bruesch_pagan_test
-#' @export
-bruesch_pagan_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
 }
 
 #' @rdname bruesch_pagan_test
@@ -68,41 +48,24 @@ bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
 
 #' Run a Goldfeld-Quandt Test
 #'
-#' A wrapper around \code{\link[lmtest]{gqtest}} that standardizes the inputs
-#' and outputs.
-#'
+#' @details
 #' The hypotheses for this test are:
 #'
 #' * Null: Variances are Equal (Homoscedastic)
 #' * Alternative: Variances are Not Equal (Heteroscedastic)
 #'
-#' @inheritParams bruesch_pagan_test
+#' @templateVar link lmtest::gqtest
+#' @template desc-linreg-tests
+#'
+#' @family homoscedasticity tests
+#' @template return
+#'
+#' @template params-linreg
 #' @param alternative The alternative hypothesis, one of "two.sided" (default),
 #'   "greater", or "less".
-#' @param ... Further arguments passed to \code{\link[lmtest]{gqtest}}.
 #'
-#' @return A [tibble][tibble::tibble-package].
-#'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' goldfeld_quandt_test(mod_lm_fit)
-#' goldfeld_quandt_test(mod_lm_fit, alternative = "greater")
-#' goldfeld_quandt_test(mod_lm_fit, alternative = "less")
-#'
-#' #> Tidymodels Method
-#' mod_linreg_fit <- parsnip::linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' goldfeld_quandt_test(mod_linreg_fit)
-#' goldfeld_quandt_test(mod_linreg_fit, alternative = "greater")
-#' goldfeld_quandt_test(mod_linreg_fit, alternative = "less")
+#' @templateVar fn goldfeld_quandt_test
+#' @template examples-linreg-tests
 #'
 #' @export
 goldfeld_quandt_test <- function(object,
@@ -110,12 +73,6 @@ goldfeld_quandt_test <- function(object,
                                  ...,
                                  .alpha = 0.05) {
   UseMethod("goldfeld_quandt_test")
-}
-
-#' @rdname goldfeld_quandt_test
-#' @export
-goldfeld_quandt_test.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
 }
 
 #' @rdname goldfeld_quandt_test

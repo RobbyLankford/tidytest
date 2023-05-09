@@ -2,15 +2,12 @@
 % Please edit documentation in R/linreg-homoscedasticity.R
 \name{goldfeld_quandt_test}
 \alias{goldfeld_quandt_test}
-\alias{goldfeld_quandt_test.default}
 \alias{goldfeld_quandt_test.lm}
 \alias{goldfeld_quandt_test._lm}
 \alias{goldfeld_quandt_test._glm}
 \title{Run a Goldfeld-Quandt Test}
 \usage{
 goldfeld_quandt_test(object, alternative = "two.sided", ..., .alpha = 0.05)
-
-\method{goldfeld_quandt_test}{default}(object, ...)
 
 \method{goldfeld_quandt_test}{lm}(object, alternative = "two.sided", ..., .alpha = 0.05)
 
@@ -24,17 +21,15 @@ goldfeld_quandt_test(object, alternative = "two.sided", ..., .alpha = 0.05)
 \item{alternative}{The alternative hypothesis, one of "two.sided" (default),
 "greater", or "less".}
 
-\item{...}{Further arguments passed to \code{\link[lmtest]{gqtest}}.}
-
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[lmtest]{gqtest}} that standardizes the inputs
-and outputs.
+A wrapper around \code{\link[lmtest:gqtest]{lmtest::gqtest()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -52,16 +47,16 @@ library(tidytest)
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 goldfeld_quandt_test(mod_lm_fit)
-goldfeld_quandt_test(mod_lm_fit, alternative = "greater")
-goldfeld_quandt_test(mod_lm_fit, alternative = "less")
 
-#> Tidymodels Method
-mod_linreg_fit <- parsnip::linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
 goldfeld_quandt_test(mod_linreg_fit)
-goldfeld_quandt_test(mod_linreg_fit, alternative = "greater")
-goldfeld_quandt_test(mod_linreg_fit, alternative = "less")
-
 }
+\seealso{
+Other homoscedasticity tests: 
+\code{\link{bruesch_pagan_test}()}
+}
+\concept{homoscedasticity tests}
