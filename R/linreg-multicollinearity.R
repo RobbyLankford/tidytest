@@ -1,62 +1,46 @@
 #' Calculate Multicollinearity of Variables in a Linear Regression
 #'
-#' A wrapper around \code{\link[car]{vif}} that standardizes the inputs and
-#' outputs.
+#' @templateVar link car::vif
+#' @template desc-linreg-tests
 #'
-#' @inheritParams bruesch_pagan_test
+#' @template return
 #'
-#' @return A [tibble][tibble::tibble-package].
+#' @template params-linreg-obj
 #'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' calculate_vifs(mod_lm_fit)
-#'
-#' #> Tidymodels Method
-#' mod_linreg_fit <- linear_reg() %>%
-#'   set_engine("lm") %>%
-#'   fit(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' calculate_vifs(mod_linreg_fit)
+#' @templateVar fn identify_multicollinearity
+#' @template examples-linreg-tests
 #'
 #' @export
-calculate_vifs <- function(object) {
-  UseMethod("calculate_vifs")
+identify_multicollinearity <- function(object) {
+  UseMethod("identify_multicollinearity")
 }
 
-#' @rdname calculate_vifs
+#' @rdname identify_multicollinearity
 #' @export
-calculate_vifs.default <- function(object) {
-  stop("No method for object of class ", class(object))
+identify_multicollinearity.lm <- function(object) {
+  identify_multicollinearity_spec(object)
 }
 
-#' @rdname calculate_vifs
+#' @rdname identify_multicollinearity
 #' @export
-calculate_vifs.lm <- function(object) {
-  calculate_vifs_spec(object)
-}
-
-#' @rdname calculate_vifs
-#' @export
-calculate_vifs._lm <- function(object) {
-  calculate_vifs_spec(object[["fit"]])
+identify_multicollinearity._lm <- function(object) {
+  identify_multicollinearity_spec(object[["fit"]])
 }
 
 
 # Helper Functions ------------------------------------------------------------
-calculate_vifs_spec <- function(object) {
-  vifs <- car::vif(object)
+calculate_vifs <- function(object) {
+  car::vif(object)
+}
 
-  vifs_num <- if (is.matrix(vifs)) vifs[ ,ncol(vifs)] else vifs
+format_vifs <- function(x) {
+  if (is.matrix(x)) x[ ,ncol(x)] else x
+}
 
+finalize_vifs <- function(x) {
   vifs_tbl <- dplyr::tibble(
-    variable = names(vifs_num),
-    vif = as.numeric(vifs_num)
+    variable = names(x),
+    vif = as.numeric(x)
   )
 
   dplyr::mutate(
@@ -68,4 +52,11 @@ calculate_vifs_spec <- function(object) {
       TRUE     ~ "moderately correlated"
     )
   )
+}
+
+identify_multicollinearity_spec <- function(object) {
+  object %>%
+    calculate_vifs() %>%
+    format_vifs() %>%
+    finalize_vifs()
 }
