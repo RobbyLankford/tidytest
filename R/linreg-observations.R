@@ -13,7 +13,7 @@
 #' multiplied by some multiplier. A traditional rule-of-thumb is for the
 #' multiplier to be three.
 #'
-#' @inheritParams bruesch_pagan_test
+#' @template params-linreg-obj
 #' @param id (Optional) A vector of values, the same length as the number of
 #'   observations, used as an identifier for each data point. If left as NULL,
 #'   the row number will be added as the ID column.
@@ -21,22 +21,14 @@
 #'   considered to be "extreme". The default is the rule-of-thumb 3
 #'  (see details).
 #'
-#' @return A [`tibble`][tibble::tibble].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' identify_extreme_leverages(mod_lm_fit)
-#' identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
+#' @templateVar fn identify_extreme_leverages
+#' @template examples-linreg-obs
 #'
 #' @export
 identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
@@ -45,14 +37,8 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
 
 #' @rdname identify_extreme_leverages
 #' @export
-identify_extreme_leverages.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
-}
-
-#' @rdname identify_extreme_leverages
-#' @export
 identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
-  identify_extreme_leverages_spec(object, id, .multiplier)
+  identify_extreme_leverages_(object, id, .multiplier)
 }
 
 
@@ -74,26 +60,14 @@ identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
 #'   indicative of an outlier. The default is the rule-of-thumb 3
 #'   (see details).
 #'
-#' @return A [`tibble`][tibble::tibble].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' ##> No outliers with default `.cutoff` value
-#' identify_outliers(mod_lm_fit)
-#'
-#' ##> Try a lower `.cutoff` value
-#' identify_outliers(mod_lm_fit, .cutoff = 2)
-#' identify_outliers(mod_lm_fit, id = rownames(mtcars), .cutoff = 2)
+#' @templateVar fn identify_outliers
+#' @template examples-linreg-obs
 #'
 #' @export
 identify_outliers <- function(object, id = NULL, .cutoff = 3) {
@@ -102,14 +76,8 @@ identify_outliers <- function(object, id = NULL, .cutoff = 3) {
 
 #' @rdname identify_outliers
 #' @export
-identify_outliers.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
-}
-
-#' @rdname identify_outliers
-#' @export
 identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
-  identify_outliers_spec(object, id, .cutoff)
+  identify_outliers_(object, id, .cutoff)
 }
 
 
@@ -132,26 +100,14 @@ identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
 #'   indicative of an influential observation. The default is the rule-of-thumb
 #'   0.5 (see details).
 #'
-#' @return A [`tibble`][tibble::tibble].
+#' @return A [tibble][tibble::tibble-package].
 #'
 #' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
-#' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
-#'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' ##> No influential observations with default `.cutoff` value
-#' identify_influential_obs(mod_lm_fit)
-#'
-#' ##> Try a lower `.cutoff` value
-#' identify_influential_obs(mod_lm_fit, .cutoff = 0.1)
-#' identify_influential_obs(mod_lm_fit, id = rownames(mtcars), .cutoff = 0.1)
+#' @templateVar fn identify_influential_obs
+#' @template examples-linreg-obs
 #'
 #' @export
 identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
@@ -160,14 +116,8 @@ identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
 
 #' @rdname identify_influential_obs
 #' @export
-identify_influential_obs.default <- function(object, ...) {
-  stop("No method for object of class ", class(object))
-}
-
-#' @rdname identify_influential_obs
-#' @export
 identify_influential_obs.lm <- function(object, id = NULL, .cutoff = 0.5) {
-  identify_influential_obs_spec(object, id, .cutoff)
+  identify_influential_obs_(object, id, .cutoff)
 }
 
 
@@ -187,69 +137,35 @@ add_id <- function(x, name, id = NULL) {
 }
 
 ## Leverage -------------------------------------------------------------------
-identify_extreme_leverages_spec <- function(object, id, .multiplier) {
-  leverages_tbl <- calc_leverages(object, id)
-  cutoff <- calc_leverage_cutoff(object, .multiplier)
+identify_extreme_leverages_ <- function(object, id, .multiplier) {
+  leverages_num <- calc_leverages(object)
+  leverages_tbl <- format_leverages(leverages_num, id = id)
+
+  cutoff_num <- calc_leverage_cutoff(object, .multiplier)
 
   leverages_tbl %>%
-    dplyr::mutate(.cutoff = cutoff) %>%
+    dplyr::mutate(.cutoff = cutoff_num) %>%
     dplyr::filter(leverage > .cutoff)
 }
 
 ##> Calculate leverage of each data point
-calc_leverages <- function(object, id = NULL, ...) {
-  UseMethod("calc_leverages")
+calc_leverages <- function(object) {
+  as.numeric(stats::influence(object)[["hat"]])
 }
 
-calc_leverages.lm <- function(object, id = NULL) {
-  calc_leverages_spec(object, id = id)
-}
-
-calc_leverages._lm <- function(object, id = NULL) {
-  calc_leverages_spec(object[["fit"]], id = id)
-}
-
-calc_leverages_spec <- function(object, id = NULL) {
-  leverages <- as.numeric(stats::influence(object)[["hat"]])
-
-  add_id(leverages, name = "leverage", id = id)
-}
-
-##> Number of coefficients in a model
-calc_num_coefs <- function(object, ...) {
-  UseMethod("calc_num_coefs")
-}
-
-calc_num_coefs.lm <- function(object) {
-  calc_num_coefs_spec(object)
-}
-
-calc_num_coefs._lm <- function(object) {
-  calc_num_coefs_spec(object[["fit"]])
-}
-
-calc_num_coefs_spec <- function(object) {
-  length(stats::coef(object))
-}
-
-##> Number of observations used to build a model
-calc_num_obs <- function(object, ...) {
-  UseMethod("calc_num_obs")
-}
-
-calc_num_obs.lm <- function(object) {
-  calc_num_obs_spec(object)
-}
-
-calc_num_obs._lm <- function(object) {
-  calc_num_obs_spec(object[["fit"]])
-}
-
-calc_num_obs_spec <- function(object) {
-  stats::nobs(object)
+format_leverages <- function(x, id) {
+  add_id(x, name = "leverage", id = id)
 }
 
 ##> Calculate leverage cutoff
+calc_num_coefs <- function(object) {
+  length(stats::coef(object))
+}
+
+calc_num_obs <- function(object) {
+  stats::nobs(object)
+}
+
 calc_leverage_cutoff <- function(object, .multiplier) {
   p <- calc_num_coefs(object)
   n <- calc_num_obs(object)
@@ -258,49 +174,35 @@ calc_leverage_cutoff <- function(object, .multiplier) {
 }
 
 ## Outliers -------------------------------------------------------------------
-identify_outliers_spec <- function(object, id, .cutoff) {
-  std_residuals_tbl <- calc_standardized_residuals(object, id)
+identify_outliers_ <- function(object, id, .cutoff) {
+  std_residuals_num <- calc_standardized_residuals(object)
+  std_residuals_tbl <- format_standardized_residuals(std_residuals_num, id)
 
   dplyr::filter(std_residuals_tbl, std_resid > .cutoff)
 }
 
-##> Calculate the standardized residual of each data point
-calc_standardized_residuals <- function(object, id = NULL, ...) {
-  UseMethod("calc_standardized_residuals")
+##> Calculate standardized residuals of each data point
+calc_standardized_residuals <- function(object) {
+  as.numeric(stats::rstandard(object))
 }
 
-calc_standardized_residuals.lm <- function(object, id = NULL) {
-  calc_standardized_residuals_spec(object, id)
-}
-
-calc_standardized_residuals._lm <- function(object, id = NULL) {
-  calc_standardized_residuals_spec(object[["fit"]], id)
-}
-
-calc_standardized_residuals_spec <- function(object, id) {
-  std_resids <- as.numeric(stats::rstandard(object))
-
-  add_id(std_resids, name = "std_resid", id = id)
+format_standardized_residuals <- function(x, id) {
+  add_id(x, name = "std_resid", id = id)
 }
 
 ## Influential ----------------------------------------------------------------
-identify_influential_obs_spec <- function(object, id, .cutoff) {
-  cooks_dist_tbl <- get_cooks_distance(object, id)
+identify_influential_obs_ <- function(object, id, .cutoff) {
+  cooks_dist_num <- calc_cooks_distance(object)
+  cooks_dist_tbl <- format_cooks_distance(cooks_dist_num, id)
 
   dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
 }
 
 ##> Calculate Cook's distance of each data point
-get_cooks_distance <- function(object, id = NULL) {
-  UseMethod("get_cooks_distance")
+calc_cooks_distance <- function(object) {
+  as.numeric(stats::cooks.distance(object))
 }
 
-get_cooks_distance.lm <- function(object, id = NULL) {
-  cooks_dist <- as.numeric(stats::cooks.distance(object))
-
-  add_id(cooks_dist, name = "cooks_dist", id = id)
-}
-
-get_cooks_distance._lm <- function(object, id = NULL) {
-  get_cooks_distance.lm(object[["fit"]], id = id)
+format_cooks_distance <- function(x, id) {
+  add_id(x, name = "cooks_dist", id = id)
 }

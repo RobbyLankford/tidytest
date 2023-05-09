@@ -2,13 +2,10 @@
 % Please edit documentation in R/linreg-observations.R
 \name{identify_outliers}
 \alias{identify_outliers}
-\alias{identify_outliers.default}
 \alias{identify_outliers.lm}
 \title{Identify Outliers}
 \usage{
 identify_outliers(object, id = NULL, .cutoff = 3)
-
-\method{identify_outliers}{default}(object, ...)
 
 \method{identify_outliers}{lm}(object, id = NULL, .cutoff = 3)
 }
@@ -22,11 +19,9 @@ the row number will be added as the ID column.}
 \item{.cutoff}{(Optional) Used to determine which standard residuals are
 indicative of an outlier. The default is the rule-of-thumb 3
 (see details).}
-
-\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 }
 \value{
-A \code{\link[tibble:tibble]{tibble}}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A data point flagged as an outlier means that is has an extreme value in its
@@ -44,15 +39,10 @@ library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+mod_lm_fit <- lm(mpg ~ ., data = mtcars)
 
-##> No outliers with default `.cutoff` value
 identify_outliers(mod_lm_fit)
-
-##> Try a lower `.cutoff` value
-identify_outliers(mod_lm_fit, .cutoff = 2)
-identify_outliers(mod_lm_fit, id = rownames(mtcars), .cutoff = 2)
-
+identify_outliers(mod_lm_fit, id = rownames(mtcars))
 }
 \references{
 Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).

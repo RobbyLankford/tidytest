@@ -2,13 +2,10 @@
 % Please edit documentation in R/linreg-observations.R
 \name{identify_extreme_leverages}
 \alias{identify_extreme_leverages}
-\alias{identify_extreme_leverages.default}
 \alias{identify_extreme_leverages.lm}
 \title{Identify Extreme Leverage Points}
 \usage{
 identify_extreme_leverages(object, id = NULL, .multiplier = 3)
-
-\method{identify_extreme_leverages}{default}(object, ...)
 
 \method{identify_extreme_leverages}{lm}(object, id = NULL, .multiplier = 3)
 }
@@ -22,11 +19,9 @@ the row number will be added as the ID column.}
 \item{.multiplier}{(Optional) Used to determine which leverages are
 considered to be "extreme". The default is the rule-of-thumb 3
 (see details).}
-
-\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 }
 \value{
-A \code{\link[tibble:tibble]{tibble}}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A data point with extreme leverage means that it has an extreme value or
@@ -46,11 +41,10 @@ library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+mod_lm_fit <- lm(mpg ~ ., data = mtcars)
 
 identify_extreme_leverages(mod_lm_fit)
 identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))
-
 }
 \references{
 Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).

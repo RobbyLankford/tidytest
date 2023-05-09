@@ -2,13 +2,10 @@
 % Please edit documentation in R/linreg-observations.R
 \name{identify_influential_obs}
 \alias{identify_influential_obs}
-\alias{identify_influential_obs.default}
 \alias{identify_influential_obs.lm}
 \title{Identify Influential Observations (Using Cook's Distance)}
 \usage{
 identify_influential_obs(object, id = NULL, .cutoff = 0.5)
-
-\method{identify_influential_obs}{default}(object, ...)
 
 \method{identify_influential_obs}{lm}(object, id = NULL, .cutoff = 0.5)
 }
@@ -22,11 +19,9 @@ the row number will be added as the ID column.}
 \item{.cutoff}{(Optional) Used to determine which Cook's distances are
 indicative of an influential observation. The default is the rule-of-thumb
 0.5 (see details).}
-
-\item{...}{Further arguments passed to \code{\link[lmtest]{bptest}}.}
 }
 \value{
-A \code{\link[tibble:tibble]{tibble}}.
+A \link[tibble:tibble-package]{tibble}.
 }
 \description{
 A data point flagged as an influential observation means that it strongly
@@ -45,15 +40,10 @@ library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+mod_lm_fit <- lm(mpg ~ ., data = mtcars)
 
-##> No influential observations with default `.cutoff` value
 identify_influential_obs(mod_lm_fit)
-
-##> Try a lower `.cutoff` value
-identify_influential_obs(mod_lm_fit, .cutoff = 0.1)
-identify_influential_obs(mod_lm_fit, id = rownames(mtcars), .cutoff = 0.1)
-
+identify_influential_obs(mod_lm_fit, id = rownames(mtcars))
 }
 \references{
 Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
