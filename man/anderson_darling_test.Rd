@@ -2,24 +2,21 @@
 % Please edit documentation in R/linreg-normality.R
 \name{anderson_darling_test}
 \alias{anderson_darling_test}
-\alias{anderson_darling_test.default}
-\alias{anderson_darling_test.numeric}
 \alias{anderson_darling_test.lm}
 \alias{anderson_darling_test._lm}
 \alias{anderson_darling_test._glm}
+\alias{anderson_darling_test_vec}
 \title{Run an Anderson-Darling Test}
 \usage{
 anderson_darling_test(object, ..., .alpha = 0.05)
-
-\method{anderson_darling_test}{default}(object, ...)
-
-\method{anderson_darling_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{anderson_darling_test}{lm}(object, ..., .alpha = 0.05)
 
 \method{anderson_darling_test}{`_lm`}(object, ..., .alpha = 0.05)
 
 \method{anderson_darling_test}{`_glm`}(object, ..., .alpha = 0.05)
+
+anderson_darling_test_vec(x, ..., .alpha = 0.05)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -29,14 +26,14 @@ anderson_darling_test(object, ..., .alpha = 0.05)
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 
-\item{x}{For numeric method, a vector of residuals.}
+\item{x}{For \verb{_vec()} functions, a numeric vector.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[nortest]{ad.test}} that standardizes the
-inputs and outputs.
+A wrapper around \code{\link[nortest:ad.test]{nortest::ad.test()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -50,22 +47,26 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-#> Numeric Method
-set.seed(1914)
-resids <- rnorm(n = 100)
-
-anderson_darling_test(resids)
-
 #> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 anderson_darling_test(mod_lm_fit)
 
-#> Tidymodels Method
-mod_linreg_fit <- parsnip::linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
 anderson_darling_test(mod_linreg_fit)
 
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(100)
+
+anderson_darling_test_vec(resids)
 }
+\seealso{
+Other normality tests: 
+\code{\link{shapiro_wilk_test}()}
+}
+\concept{normality tests}

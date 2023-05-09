@@ -2,24 +2,21 @@
 % Please edit documentation in R/linreg-normality.R
 \name{shapiro_wilk_test}
 \alias{shapiro_wilk_test}
-\alias{shapiro_wilk_test.default}
-\alias{shapiro_wilk_test.numeric}
 \alias{shapiro_wilk_test.lm}
 \alias{shapiro_wilk_test._lm}
 \alias{shapiro_wilk_test._glm}
+\alias{shapiro_wilk_test_vec}
 \title{Run a Shapiro-Wilk Test}
 \usage{
 shapiro_wilk_test(object, ..., .alpha = 0.05)
-
-\method{shapiro_wilk_test}{default}(object, ...)
-
-\method{shapiro_wilk_test}{numeric}(x, ..., .alpha = 0.05)
 
 \method{shapiro_wilk_test}{lm}(object, ..., .alpha = 0.05)
 
 \method{shapiro_wilk_test}{`_lm`}(object, ..., .alpha = 0.05)
 
 \method{shapiro_wilk_test}{`_glm`}(object, ..., .alpha = 0.05)
+
+shapiro_wilk_test_vec(x, ..., .alpha = 0.05)
 }
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
@@ -29,14 +26,14 @@ shapiro_wilk_test(object, ..., .alpha = 0.05)
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}
 
-\item{x}{For numeric method, a vector of residuals.}
+\item{x}{For \verb{_vec()} functions, a numeric vector.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[stats]{shapiro.test}} that standardizes the
-inputs and outputs.
+A wrapper around \code{\link[stats:shapiro.test]{stats::shapiro.test()}} that standardizes the inputs and outputs.
 }
 \details{
 The hypotheses for this test are:
@@ -50,22 +47,26 @@ library(dplyr)
 library(parsnip)
 library(tidytest)
 
-#> Numeric Method
-set.seed(1914)
-resids <- rnorm(n = 100)
-
-shapiro_wilk_test(resids)
-
 #> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 shapiro_wilk_test(mod_lm_fit)
 
-#> Tidymodels Method
-mod_linreg_fit <- parsnip::linear_reg() \%>\%
+#> `linear_reg` Method
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
 shapiro_wilk_test(mod_linreg_fit)
 
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(100)
+
+shapiro_wilk_test_vec(resids)
 }
+\seealso{
+Other normality tests: 
+\code{\link{anderson_darling_test}()}
+}
+\concept{normality tests}
