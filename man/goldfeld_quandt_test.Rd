@@ -18,8 +18,10 @@ goldfeld_quandt_test(object, alternative = "two.sided", ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{alternative}{The alternative hypothesis, one of "two.sided" (default),
-"greater", or "less".}
+\item{alternative}{Passed to the \code{alternative} argument of \code{\link[lmtest:gqtest]{lmtest::gqtest()}}
+(one of "two.sided", "greater", or "less". Default is "two.sided").}
+
+\item{...}{Further arguments passed to \code{\link[lmtest:gqtest]{lmtest::gqtest()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
 The default is 0.05 (5\%).}

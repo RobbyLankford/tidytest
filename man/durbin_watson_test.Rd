@@ -18,6 +18,9 @@ durbin_watson_test(object, alternative = "two.sided", ..., .alpha = 0.05)
 \arguments{
 \item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
+\item{alternative}{Passed to the \code{alternative} argument of \code{\link[lmtest:dwtest]{lmtest::dwtest()}}
+(one of "two.sided", "greater", or "less". Default is "two.sided").}
+
 \item{...}{Further arguments passed to \code{\link[lmtest:dwtest]{lmtest::dwtest()}}.}
 
 \item{.alpha}{(Optional) Critical p-value used to determine test conclusion.

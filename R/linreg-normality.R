@@ -14,8 +14,9 @@
 #' @family normality tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-linreg-vec
+#' @template params-alpha
 #' @param ... Not currently used.
 #'
 #' @templateVar fn anderson_darling_test
@@ -74,8 +75,9 @@ anderson_darling_test_vec <- function(x, ..., .alpha = 0.05) {
 #' @family normality tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-linreg-vec
+#' @template params-alpha
 #' @param ... Not currently used.
 #'
 #' @templateVar fn shapiro_wilk_test

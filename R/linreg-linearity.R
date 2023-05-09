@@ -14,8 +14,9 @@
 #' @family linearity tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-dots
+#' @template params-alpha
 #' @param power (Optional) A vector of positive integers indicating the powers
 #'   of the variables that should be included. The default is 2:3, meaning
 #'   quadratic or cubic influence of the fitted response.
@@ -63,8 +64,9 @@ ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
 #' @family linearity tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-dots
+#' @template params-alpha
 #'
 #' @templateVar fn harvey_collier_test
 #' @template examples-linreg-tests

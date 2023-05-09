@@ -14,8 +14,10 @@
 #' @family independence tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
+#' @template params-linreg-alt
 #' @template params-dots
+#' @template params-alpha
 #'
 #' @templateVar fn durbin_watson_test
 #' @template examples-linreg-tests
@@ -72,9 +74,10 @@ durbin_watson_test._glm <- function(object,
 #' @family independence tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-linreg-vec
 #' @template params-dots
+#' @template params-alpha
 #'
 #' @templateVar fn ljung_box_test
 #' @template examples-linreg-tests

@@ -14,8 +14,9 @@
 #' @family homoscedasticity tests
 #' @template return
 #'
-#' @template params-linreg
+#' @template params-linreg-obj
 #' @template params-dots
+#' @template params-alpha
 #'
 #' @templateVar fn bruesch_pagan_test
 #' @template examples-linreg-tests
@@ -60,9 +61,10 @@ bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
 #' @family homoscedasticity tests
 #' @template return
 #'
-#' @template params-linreg
-#' @param alternative The alternative hypothesis, one of "two.sided" (default),
-#'   "greater", or "less".
+#' @template params-linreg-obj
+#' @template params-linreg-alt
+#' @template params-dots
+#' @template params-alpha
 #'
 #' @templateVar fn goldfeld_quandt_test
 #' @template examples-linreg-tests
