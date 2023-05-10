@@ -99,7 +99,7 @@ ljung_box_test.lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname ljung_box_test
 #' @export
 ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   ljung_box_test_spec(resids, ..., .alpha = .alpha)
 }
@@ -107,7 +107,7 @@ ljung_box_test._lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname ljung_box_test
 #' @export
 ljung_box_test._glm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   ljung_box_test_spec(resids, ..., .alpha = .alpha)
 }

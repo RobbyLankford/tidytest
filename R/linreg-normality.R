@@ -39,7 +39,7 @@ anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   anderson_darling_test_spec(resids, ..., .alpha = .alpha)
 }
@@ -47,7 +47,7 @@ anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   anderson_darling_test_spec(resids, ..., .alpha = .alpha)
 }
@@ -100,7 +100,7 @@ shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   shapiro_wilk_test_spec(resids, ..., .alpha = 0.05)
 }
@@ -108,7 +108,7 @@ shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- get_residuals(object[["fit"]])
 
   shapiro_wilk_test_spec(resids, ..., .alpha = 0.05)
 }
