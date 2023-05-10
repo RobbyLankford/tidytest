@@ -2,17 +2,17 @@
 % Please edit documentation in R/linreg-plots.R
 \name{plot_pred_vs_resid}
 \alias{plot_pred_vs_resid}
-\alias{plot_pred_vs_resid.lm}
+\alias{plot_pred_vs_resid.data.frame}
 \title{Create a Plot of Predictors vs Residuals}
 \usage{
-plot_pred_vs_resid(object, .hline = "dashed")
+plot_pred_vs_resid(.data, .hline = "dashed")
 
-\method{plot_pred_vs_resid}{lm}(object, .hline = "dashed")
+\method{plot_pred_vs_resid}{data.frame}(.data, .hline = "dashed")
 }
 \arguments{
-\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
+\item{.data}{The output of \code{\link[=calc_pred_vs_resid]{calc_pred_vs_resid()}}.}
 
-\item{.hline}{(Optional) The \code{linetype} of the line drawn at the \code{y = 0}.}
+\item{.hline}{(Optional) The \code{linetype} of the line drawn at \code{y = 0}.}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot}} object.
@@ -32,7 +32,8 @@ library(tidytest)
 #> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-plot_pred_vs_resid(mod_lm_fit)
+pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+plot_pred_vs_resid(pred_vs_resid_tbl)
 
 }
 \references{

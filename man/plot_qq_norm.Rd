@@ -2,15 +2,15 @@
 % Please edit documentation in R/linreg-plots.R
 \name{plot_qq_norm}
 \alias{plot_qq_norm}
-\alias{plot_qq_norm.lm}
+\alias{plot_qq_norm.data.frame}
 \title{Create a Quantile-Quantile (Q-Q) Plot}
 \usage{
-plot_qq_norm(object)
+plot_qq_norm(.data)
 
-\method{plot_qq_norm}{lm}(object)
+\method{plot_qq_norm}{data.frame}(.data)
 }
 \arguments{
-\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
+\item{.data}{The output of \code{\link[=calc_pred_vs_resid]{calc_pred_vs_resid()}}.}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot}} object.
@@ -31,7 +31,8 @@ library(tidytest)
 #> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-plot_qq_norm(mod_lm_fit)
+pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+plot_qq_norm(pred_vs_resid_tbl)
 
 }
 \references{

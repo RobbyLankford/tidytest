@@ -1,5 +1,42 @@
 # Predictors vs Residuals Plot ------------------------------------------------
 
+#' Calculate Predictions and Residuals From a Model
+#'
+#' From a model, calculate the predicted values from a set of data and then
+#' calculate the residuals of those predictions.
+#'
+#' @template params-linreg-obj
+#' @param data (Optional) a data set used to create predictions (if omitted,
+#'   the fitted values are used).
+#'
+#' @return A [tibble][tibble::tibble-package] with columns `.pred` and `.resid`.
+#'
+#' @template examples-linreg
+#' @examples
+#'
+#' calc_pred_vs_resid(mod_lm_fit)
+#' calc_pred_vs_resid(mod_lm_fit, mtcars[1:15, ])
+#'
+#' @export
+calc_pred_vs_resid <- function(object, data) {
+  UseMethod("calc_pred_vs_resid")
+}
+
+#' @rdname calc_pred_vs_resid
+#' @export
+calc_pred_vs_resid.lm <- function(object, data) {
+  if (rlang::is_missing(data)) {
+    data <- object[["model"]]
+  }
+
+  xvars_chr <- names(object[["coefficients"]])
+  vars_chr <- names(object[["model"]])
+  yvar_chr <- setdiff(vars_chr, xvars_chr[xvars_chr != "(Intercept)"])
+
+  calc_pred_vs_resid_(object, data, yvar_chr)
+}
+
+
 #' Create a Plot of Predictors vs Residuals
 #'
 #' A predictors vs residuals plot is useful for visually inspecting if a linear
@@ -8,8 +45,8 @@
 #' residuals on the y-axis. If the resulting scatterplot shows a discernible
 #' pattern, then either or both of the assumptions are likely violated.
 #'
-#' @inheritParams bruesch_pagan_test
-#' @param .hline (Optional) The `linetype` of the line drawn at the `y = 0`.
+#' @param .data The output of [calc_pred_vs_resid()].
+#' @param .hline (Optional) The `linetype` of the line drawn at `y = 0`.
 #'
 #' @return A [`ggplot`][ggplot2::ggplot] object.
 #'
@@ -17,28 +54,23 @@
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
+#' @template examples-linreg
 #' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
 #'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' plot_pred_vs_resid(mod_lm_fit)
+#' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#' plot_pred_vs_resid(pred_vs_resid_tbl)
 #'
 #' @export
-plot_pred_vs_resid <- function(object, .hline = "dashed") {
+plot_pred_vs_resid <- function(.data, .hline = "dashed") {
   UseMethod("plot_pred_vs_resid")
 }
 
 #' @rdname plot_pred_vs_resid
 #' @export
-plot_pred_vs_resid.lm <- function(object, .hline = "dashed") {
-  object %>%
-    get_preds_vs_resid() %>%
-    plot_pred_vs_resid_(.hline = .hline)
+plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
+  plot_pred_vs_resid_(.data, .hline = .hline)
 }
+
 
 # Q-Q Plot --------------------------------------------------------------------
 
@@ -59,45 +91,37 @@ plot_pred_vs_resid.lm <- function(object, .hline = "dashed") {
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
+#' @template examples-linreg
 #' @examples
-#' library(dplyr)
-#' library(parsnip)
-#' library(tidytest)
 #'
-#' #> `lm` Method
-#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
-#'
-#' plot_qq_norm(mod_lm_fit)
+#' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#' plot_qq_norm(pred_vs_resid_tbl)
 #'
 #' @export
-plot_qq_norm <- function(object) {
+plot_qq_norm <- function(.data) {
   UseMethod("plot_qq_norm")
 }
 
 #' @rdname plot_qq_norm
 #' @export
-plot_qq_norm.lm <- function(object) {
-  object %>%
-    get_resid() %>%
-    plot_qq_norm_()
+plot_qq_norm.data.frame <- function(.data) {
+  plot_qq_norm_(.data)
 }
 
 
 # Helpers ---------------------------------------------------------------------
-get_preds_vs_resid <- function(object, ...) {
+calc_pred_vs_resid_ <- function(object, data, yvar) {
   dplyr::tibble(
-    .pred = get_predictions(object, ...),
-    .resid = get_residuals(object)
+    .pred = calc_predictions(object, data),
+    .resid = calc_residuals(object, data, yvar)
   )
 }
 
-get_resid <- function(object) {
-  dplyr::tibble(.resid = get_residuals(object))
-}
-
 plot_pred_vs_resid_ <- function(.data, .hline) {
-  .data %>%
-    ggplot2::ggplot(ggplot2::aes(x = .pred, y = .resid)) +
+  ggplot2::ggplot(
+    data = .data,
+    mapping = ggplot2::aes(x = .pred, y = .resid)
+  ) +
     ggplot2::geom_point() +
     ggplot2::geom_hline(ggplot2::aes(yintercept = 0), linetype = .hline) +
     ggplot2::labs(x = "Predictions", y = "Residuals")
