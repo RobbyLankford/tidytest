@@ -2,57 +2,79 @@
 % Please edit documentation in R/tseries-stationarity.R
 \name{kpss_test}
 \alias{kpss_test}
-\alias{kpss_test.default}
-\alias{kpss_test.numeric}
 \alias{kpss_test.lm}
 \alias{kpss_test._lm}
+\alias{kpss_test_vec}
 \title{Run a Kwiatkowski-Phillips-Schmidt-Shin (KPSS) Test}
 \usage{
-kpss_test(x, ...)
+kpss_test(object, null = "Level", ..., .alpha = 0.05)
 
-\method{kpss_test}{default}(x, ...)
+\method{kpss_test}{lm}(object, null = "Level", ..., .alpha = 0.05)
 
-\method{kpss_test}{numeric}(x, null = "Level", ..., .alpha = 0.05)
+\method{kpss_test}{`_lm`}(object, null = "Level", ..., .alpha = 0.05)
 
-\method{kpss_test}{lm}(x, null = "Level", ..., .alpha = 0.05)
-
-\method{kpss_test}{`_lm`}(x, null = "Level", ..., .alpha = 0.05)
+kpss_test_vec(x, null = "Level", ..., .alpha = 0.05)
 }
 \arguments{
-\item{x}{a numeric vector or univariate time series (for numeric method),
-or a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{further arguments passed to \code{\link[tseries]{kpss.test}}.}
+\item{null}{(Optional) The null hypothesis, either "Level" (default) or
+"Trend".}
 
-\item{null}{the null hypothesis, either "Level" (default) or "Trend".}
+\item{...}{Further arguments passed to \code{\link[tseries:kpss.test]{tseries::kpss.test()}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
+
+\item{x}{For \verb{_vec()} functions, a numeric vector.}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[tseries]{kpss.test}} that standardizes the
-inputs and outputs.
+The hypotheses for this test are:
+
+A wrapper around \code{\link[tseries:kpss.test]{tseries::kpss.test()}} that standardizes the inputs and outputs.
 }
 \details{
-The hypotheses for this test are:
 \itemize{
 \item Null: Series is either Level or Trend stationary (user defined)
 \item Alternative: Series has a unit root
 }
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+kpss_test(mod_lm_fit)
+kpss_test(mod_lm_fit, null = "Trend")
+
+
+#> `linear_reg` Method
+library(parsnip)
+
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-kpss_test(mod_fit)
-kpss_test(mod_fit, null = "Level")
-kpss_test(mod_fit, null = "Trend")
+kpss_test(mod_linreg_fit)
+kpss_test(mod_linreg_fit, null = "Trend")
+
+
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(100)
+
+kpss_test_vec(resids)
+kpss_test_vec(resids, null = "Trend")
 
 }
+\seealso{
+Other stationarity tests: 
+\code{\link{aug_dickey_fuller_test}()},
+\code{\link{phillips_perron_test}()}
+}
+\concept{stationarity tests}

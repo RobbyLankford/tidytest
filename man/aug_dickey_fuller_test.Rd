@@ -2,42 +2,42 @@
 % Please edit documentation in R/tseries-stationarity.R
 \name{aug_dickey_fuller_test}
 \alias{aug_dickey_fuller_test}
-\alias{aug_dickey_fuller_test.default}
-\alias{aug_dickey_fuller_test.numeric}
 \alias{aug_dickey_fuller_test.lm}
 \alias{aug_dickey_fuller_test._lm}
+\alias{aug_dickey_fuller_test_vec}
 \title{Run an Augmented Dickey-Fuller (ADF) Test}
 \usage{
-aug_dickey_fuller_test(x, ...)
+aug_dickey_fuller_test(object, alternative = "stationary", ..., .alpha = 0.05)
 
-\method{aug_dickey_fuller_test}{default}(x, ...)
+\method{aug_dickey_fuller_test}{lm}(object, alternative = "stationary", ..., .alpha = 0.05)
 
-\method{aug_dickey_fuller_test}{numeric}(x, alternative = "stationary", ..., .alpha = 0.05)
+\method{aug_dickey_fuller_test}{`_lm`}(object, alternative = "stationary", ..., .alpha = 0.05)
 
-\method{aug_dickey_fuller_test}{lm}(x, alternative = "stationary", ..., .alpha = 0.05)
-
-\method{aug_dickey_fuller_test}{`_lm`}(x, alternative = "stationary", ..., .alpha = 0.05)
+aug_dickey_fuller_test_vec(x, alternative = "stationary", ..., .alpha = 0.05)
 }
 \arguments{
-\item{x}{a numeric vector or univariate time series (for numeric method),
-or a model object (such as a fitted \code{lm} object).}
+\item{object}{A model object (such as a fitted \code{\link[stats:lm]{lm}} object).}
 
-\item{...}{further arguments passed to \code{\link[tseries]{adf.test}}.}
+\item{alternative}{(Optional) The alternative hypothesis, either
+"stationary" (default) or "explosive".}
 
-\item{alternative}{the alternative hypothesis, either "stationary" (default)
-or "explosive".}
+\item{...}{Further arguments passed to \code{\link[tseries:adf.test]{tseries::adf.test()}}.}
 
-\item{.alpha}{critical p-value used to determine test conclusion.}
+\item{.alpha}{(Optional) Critical p-value used to determine test conclusion.
+The default is 0.05 (5\%).}
+
+\item{x}{For \verb{_vec()} functions, a numeric vector.}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}.
+A \link[tibble:tibble-package]{tibble} with columns \code{test}, \code{statistic},
+\code{p_value}, \code{result}, \code{outcome}, and \code{.notes} with extra information.
 }
 \description{
-A wrapper around \code{\link[tseries]{adf.test}} that standardizes the
-inputs and outputs.
+The hypotheses for this test are:
+
+A wrapper around \code{\link[tseries:adf.test]{tseries::adf.test()}} that standardizes the inputs and outputs.
 }
 \details{
-The hypotheses for this test are:
 \itemize{
 \item Null: Series has a unit root
 \item Alternative: Series is either stationary or has explosive root
@@ -45,16 +45,37 @@ The hypotheses for this test are:
 }
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() \%>\%
+#> `lm` Method
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
+
+aug_dickey_fuller_test(mod_lm_fit)
+aug_dickey_fuller_test(mod_lm_fit, alternative = "explosive")
+
+
+#> `linear_reg` Method
+library(parsnip)
+
+mod_linreg_fit <- linear_reg() \%>\%
   set_engine("lm") \%>\%
   fit(mpg ~ disp + wt + hp, data = mtcars)
 
-aug_dickey_fuller_test(mod_fit)
-aug_dickey_fuller_test(mod_fit, alternative = "stationary")
-aug_dickey_fuller_test(mod_fit, alternative = "explosive")
+aug_dickey_fuller_test(mod_linreg_fit)
+aug_dickey_fuller_test(mod_linreg_fit, alternative = "explosive")
+
+
+#> Numeric Method
+set.seed(1914)
+resids <- rnorm(100)
+
+aug_dickey_fuller_test_vec(resids)
+aug_dickey_fuller_test_vec(resids, alternative = "explosive")
 
 }
+\seealso{
+Other stationarity tests: 
+\code{\link{kpss_test}()},
+\code{\link{phillips_perron_test}()}
+}
+\concept{stationarity tests}
