@@ -23,8 +23,6 @@ From a model, calculate the predicted values from a set of data and then
 calculate the residuals of those predictions.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
 #> `lm` Method

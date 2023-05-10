@@ -20,7 +20,8 @@
 #' @param ... Not currently used.
 #'
 #' @templateVar fn anderson_darling_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #' @template examples-linreg-tests-vec
 #'
 #' @export
@@ -81,7 +82,8 @@ anderson_darling_test_vec <- function(x, ..., .alpha = 0.05) {
 #' @param ... Not currently used.
 #'
 #' @templateVar fn shapiro_wilk_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #' @template examples-linreg-tests-vec
 #'
 #' @export

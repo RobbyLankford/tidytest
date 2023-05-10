@@ -20,7 +20,8 @@
 #' @template params-alpha
 #'
 #' @templateVar fn durbin_watson_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 durbin_watson_test <- function(object,
@@ -80,7 +81,8 @@ durbin_watson_test._glm <- function(object,
 #' @template params-alpha
 #'
 #' @templateVar fn ljung_box_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #' @template examples-linreg-tests-vec
 #'
 #' @export

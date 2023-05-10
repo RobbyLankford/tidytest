@@ -22,7 +22,8 @@
 #'   quadratic or cubic influence of the fitted response.
 #'
 #' @templateVar fn ramsey_reset_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 ramsey_reset_test <- function(object, power = 2:3, ..., .alpha = 0.05) {
@@ -69,7 +70,8 @@ ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
 #' @template params-alpha
 #'
 #' @templateVar fn harvey_collier_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 harvey_collier_test <- function(object, ..., .alpha = 0.05) {

@@ -36,12 +36,10 @@ multiplied by some multiplier. A traditional rule-of-thumb is for the
 multiplier to be three.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ ., data = mtcars)
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 identify_extreme_leverages(mod_lm_fit)
 identify_extreme_leverages(mod_lm_fit, id = rownames(mtcars))

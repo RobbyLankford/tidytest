@@ -25,14 +25,12 @@ residuals on the y-axis. If the resulting scatterplot shows a discernible
 pattern, then either or both of the assumptions are likely violated.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
-#> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+
 plot_pred_vs_resid(pred_vs_resid_tbl)
 
 }

@@ -35,12 +35,10 @@ filters out only those that are above a certain cutoff. A traditional
 rule-of-thumb is for that cutoff value to be 0.5.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ ., data = mtcars)
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 identify_influential_obs(mod_lm_fit)
 identify_influential_obs(mod_lm_fit, id = rownames(mtcars))

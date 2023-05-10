@@ -8,7 +8,8 @@
 #' @template params-linreg-obj
 #'
 #' @templateVar fn identify_multicollinearity
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 identify_multicollinearity <- function(object) {

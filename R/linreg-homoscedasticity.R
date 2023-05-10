@@ -19,7 +19,8 @@
 #' @template params-alpha
 #'
 #' @templateVar fn bruesch_pagan_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 bruesch_pagan_test <- function(object, ..., .alpha = 0.05) {
@@ -67,7 +68,8 @@ bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
 #' @template params-alpha
 #'
 #' @templateVar fn goldfeld_quandt_test
-#' @template examples-linreg-tests
+#' @template examples-linreg-lm
+#' @template examples-linreg-linear_reg
 #'
 #' @export
 goldfeld_quandt_test <- function(object,

@@ -34,12 +34,10 @@ residual value greater than some cutoff value. A traditional rule-of-thumb
 is for that cutoff value to be three.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
 #> `lm` Method
-mod_lm_fit <- lm(mpg ~ ., data = mtcars)
+mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 identify_outliers(mod_lm_fit)
 identify_outliers(mod_lm_fit, id = rownames(mtcars))

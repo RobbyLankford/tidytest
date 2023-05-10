@@ -28,6 +28,7 @@
 #'   McGraw-Hill/Irwin.
 #'
 #' @templateVar fn identify_extreme_leverages
+#' @template examples-linreg-lm
 #' @template examples-linreg-obs
 #'
 #' @export
@@ -67,6 +68,7 @@ identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
 #'   McGraw-Hill/Irwin.
 #'
 #' @templateVar fn identify_outliers
+#' @template examples-linreg-lm
 #' @template examples-linreg-obs
 #'
 #' @export
@@ -107,6 +109,7 @@ identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
 #'   McGraw-Hill/Irwin.
 #'
 #' @templateVar fn identify_influential_obs
+#' @template examples-linreg-lm
 #' @template examples-linreg-obs
 #'
 #' @export

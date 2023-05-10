@@ -24,14 +24,12 @@ of the points fall outside of the confidence band, the assumption is likely
 violated.
 }
 \examples{
-library(dplyr)
-library(parsnip)
 library(tidytest)
 
-#> `lm` Method
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
 pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+
 plot_qq_norm(pred_vs_resid_tbl)
 
 }

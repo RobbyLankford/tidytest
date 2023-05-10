@@ -11,10 +11,9 @@
 #'
 #' @return A [tibble][tibble::tibble-package] with columns `.pred` and `.resid`.
 #'
-#' @template examples-linreg
+#' @templateVar fn calc_pred_vs_resid
+#' @template examples-linreg-lm
 #' @examples
-#'
-#' calc_pred_vs_resid(mod_lm_fit)
 #' calc_pred_vs_resid(mod_lm_fit, mtcars[1:15, ])
 #'
 #' @export
@@ -54,10 +53,13 @@ calc_pred_vs_resid.lm <- function(object, data) {
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
-#' @template examples-linreg
 #' @examples
+#' library(tidytest)
+#'
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
 #' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#'
 #' plot_pred_vs_resid(pred_vs_resid_tbl)
 #'
 #' @export
@@ -91,10 +93,13 @@ plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
-#' @template examples-linreg
 #' @examples
+#' library(tidytest)
+#'
+#' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
 #' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#'
 #' plot_qq_norm(pred_vs_resid_tbl)
 #'
 #' @export
