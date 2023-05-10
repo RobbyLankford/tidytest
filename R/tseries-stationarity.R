@@ -246,9 +246,9 @@ kpss_test_ <- function(resids, null = "Level", ..., .alpha = 0.05) {
     tseries::kpss.test,
     null = null,
     ...,
-    .test   = "Kwiatkowski-Phillips-Schmidt-Shin",
-    .null   = paste(null, "Stationary"),
-    .alt    = "Unit Root",
+    .test  = "Kwiatkowski-Phillips-Schmidt-Shin",
+    .null  = paste(null, "Stationary"),
+    .alt   = "Unit Root",
     .alpha = .alpha
   )
 }

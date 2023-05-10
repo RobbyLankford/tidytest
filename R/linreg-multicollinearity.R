@@ -19,13 +19,13 @@ identify_multicollinearity <- function(object) {
 #' @rdname identify_multicollinearity
 #' @export
 identify_multicollinearity.lm <- function(object) {
-  identify_multicollinearity_spec(object)
+  identify_multicollinearity_(object)
 }
 
 #' @rdname identify_multicollinearity
 #' @export
 identify_multicollinearity._lm <- function(object) {
-  identify_multicollinearity_spec(object[["fit"]])
+  identify_multicollinearity_(object[["fit"]])
 }
 
 
@@ -55,7 +55,7 @@ finalize_vifs <- function(x) {
   )
 }
 
-identify_multicollinearity_spec <- function(object) {
+identify_multicollinearity_ <- function(object) {
   object %>%
     calculate_vifs() %>%
     format_vifs() %>%
