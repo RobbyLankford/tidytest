@@ -1,4 +1,4 @@
-# Predictors vs Residuals Plot ------------------------------------------------
+# Predictions and Residuals ---------------------------------------------------
 
 #' Calculate Predictions and Residuals From a Model
 #'
@@ -45,7 +45,9 @@ calculate_residuals.lm <- function(object, data = NULL) {
 }
 
 
-#' Create a Plot of Predictors vs Residuals
+# Predictions vs Residuals Plot -----------------------------------------------
+
+#' Create a Plot of Predictions vs Residuals
 #'
 #' A predictors vs residuals plot is useful for visually inspecting if a linear
 #' regression model violates both the Linear and Equal Variance assumptions
@@ -62,6 +64,8 @@ calculate_residuals.lm <- function(object, data = NULL) {
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
 #'
+#' @seealso [calculate_residuals()]
+#'
 #' @examples
 #' library(tidytest)
 #'
@@ -69,17 +73,17 @@ calculate_residuals.lm <- function(object, data = NULL) {
 #'
 #' pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 #'
-#' plot_pred_vs_resid(pred_vs_resid_tbl)
+#' plot_predictions_vs_residuals(pred_vs_resid_tbl)
 #'
 #' @export
-plot_pred_vs_resid <- function(.data, .hline = "dashed") {
-  UseMethod("plot_pred_vs_resid")
+plot_predictions_vs_residuals <- function(.data, .hline = "dashed") {
+  UseMethod("plot_predictions_vs_residuals")
 }
 
-#' @rdname plot_pred_vs_resid
+#' @rdname plot_predictions_vs_residuals
 #' @export
-plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
-  plot_pred_vs_resid_(.data, .hline = .hline)
+plot_predictions_vs_residuals.data.frame <- function(.data, .hline = "dashed") {
+  plot_predictions_vs_residuals_(.data, .hline = .hline)
 }
 
 
@@ -94,13 +98,15 @@ plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
 #' of the points fall outside of the confidence band, the assumption is likely
 #' violated.
 #'
-#' @inheritParams plot_pred_vs_resid
+#' @inheritParams plot_predictions_vs_residuals
 #'
 #' @return A [`ggplot`][ggplot2::ggplot] object.
 #'
 #' @references Kutner, M., Nachtsheim, C., Neter, J. and Li, W. (2005).
 #'   _Applied Linear Statistical Models_. ISBN: 0-07-238688-6.
 #'   McGraw-Hill/Irwin.
+#'
+#' @seealso [calculate_residuals()]
 #'
 #' @examples
 #' library(tidytest)
@@ -109,17 +115,17 @@ plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
 #'
 #' pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 #'
-#' plot_qq_norm(pred_vs_resid_tbl)
+#' plot_qq_normality(pred_vs_resid_tbl)
 #'
 #' @export
-plot_qq_norm <- function(.data) {
-  UseMethod("plot_qq_norm")
+plot_qq_normality <- function(.data) {
+  UseMethod("plot_qq_normality")
 }
 
-#' @rdname plot_qq_norm
+#' @rdname plot_qq_normality
 #' @export
-plot_qq_norm.data.frame <- function(.data) {
-  plot_qq_norm_(.data)
+plot_qq_normality.data.frame <- function(.data) {
+  plot_qq_normality_(.data)
 }
 
 
@@ -135,7 +141,7 @@ calculate_residuals_ <- function(object, data, yvar) {
   )
 }
 
-plot_pred_vs_resid_ <- function(.data, .hline) {
+plot_predictions_vs_residuals_ <- function(.data, .hline) {
   ggplot2::ggplot(
     data = .data,
     mapping = ggplot2::aes(x = .pred, y = .resid)
@@ -145,7 +151,7 @@ plot_pred_vs_resid_ <- function(.data, .hline) {
     ggplot2::labs(x = "Predictions", y = "Residuals")
 }
 
-plot_qq_norm_ <- function(.data) {
+plot_qq_normality_ <- function(.data) {
   ggplot2::ggplot(data = .data, mapping = ggplot2::aes(sample = .resid)) +
     qqplotr::stat_qq_band() +
     qqplotr::stat_qq_line() +
