@@ -5,34 +5,43 @@
 #' From a model, calculate the predicted values from a set of data and then
 #' calculate the residuals of those predictions.
 #'
+#' @details
+#' ## Known Limitations
+#' This function will not work if transformations to variables are done in the
+#' model formula (*e.g.*, `lm(mpg ~ wt + as.factor(vs), data = mtcars)`).
+#' Variable transformations should be done to the data set before creating the
+#' model formula.
+#'
 #' @template params-linreg-obj
 #' @param data (Optional) a data set used to create predictions (if omitted,
 #'   the fitted values are used).
 #'
 #' @return A [tibble][tibble::tibble-package] with columns `.pred` and `.resid`.
 #'
-#' @templateVar fn calc_pred_vs_resid
+#' @templateVar fn calculate_residuals
 #' @template examples-linreg-lm
 #' @examples
-#' calc_pred_vs_resid(mod_lm_fit, mtcars[1:15, ])
+#' calculate_residuals(mod_lm_fit, mtcars[1:15, ])
 #'
 #' @export
-calc_pred_vs_resid <- function(object, data) {
-  UseMethod("calc_pred_vs_resid")
+calculate_residuals <- function(object, data = NULL) {
+  UseMethod("calculate_residuals")
 }
 
-#' @rdname calc_pred_vs_resid
+#' @rdname calculate_residuals
 #' @export
-calc_pred_vs_resid.lm <- function(object, data) {
-  if (rlang::is_missing(data)) {
+calculate_residuals.lm <- function(object, data = NULL) {
+  if (rlang::is_null(data)) {
     data <- object[["model"]]
   }
 
-  xvars_chr <- names(object[["coefficients"]])
-  vars_chr <- names(object[["model"]])
-  yvar_chr <- setdiff(vars_chr, xvars_chr[xvars_chr != "(Intercept)"])
+  terms_lst <- object[["terms"]]
+  vars_chr <- as.character(attr(terms_lst, "variables"))
+  idx_num <- as.numeric(attr(terms_lst, "response"))
 
-  calc_pred_vs_resid_(object, data, yvar_chr)
+  yvar_chr <- vars_chr[[idx_num + 1]]
+
+  calculate_residuals_(object, data, yvar_chr)
 }
 
 
@@ -44,7 +53,7 @@ calc_pred_vs_resid.lm <- function(object, data) {
 #' residuals on the y-axis. If the resulting scatterplot shows a discernible
 #' pattern, then either or both of the assumptions are likely violated.
 #'
-#' @param .data The output of [calc_pred_vs_resid()].
+#' @param .data The output of [calculate_residuals()].
 #' @param .hline (Optional) The `linetype` of the line drawn at `y = 0`.
 #'
 #' @return A [`ggplot`][ggplot2::ggplot] object.
@@ -58,7 +67,7 @@ calc_pred_vs_resid.lm <- function(object, data) {
 #'
 #' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#' pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 #'
 #' plot_pred_vs_resid(pred_vs_resid_tbl)
 #'
@@ -98,7 +107,7 @@ plot_pred_vs_resid.data.frame <- function(.data, .hline = "dashed") {
 #'
 #' mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 #'
-#' pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+#' pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 #'
 #' plot_qq_norm(pred_vs_resid_tbl)
 #'
@@ -115,10 +124,14 @@ plot_qq_norm.data.frame <- function(.data) {
 
 
 # Helpers ---------------------------------------------------------------------
-calc_pred_vs_resid_ <- function(object, data, yvar) {
+calculate_residuals_ <- function(object, data, yvar) {
+  acts_num <- data[[yvar]]
+  preds_num <- as.numeric(stats::predict(object, data))
+  resids_num <- acts_num - preds_num
+
   dplyr::tibble(
-    .pred = calc_predictions(object, data),
-    .resid = calc_residuals(object, data, yvar)
+    .pred = preds_num,
+    .resid = resids_num
   )
 }
 

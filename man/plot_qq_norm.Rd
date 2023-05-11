@@ -10,7 +10,7 @@ plot_qq_norm(.data)
 \method{plot_qq_norm}{data.frame}(.data)
 }
 \arguments{
-\item{.data}{The output of \code{\link[=calc_pred_vs_resid]{calc_pred_vs_resid()}}.}
+\item{.data}{The output of \code{\link[=calculate_residuals]{calculate_residuals()}}.}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot}} object.
@@ -28,7 +28,7 @@ library(tidytest)
 
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 
 plot_qq_norm(pred_vs_resid_tbl)
 

@@ -10,7 +10,7 @@ plot_pred_vs_resid(.data, .hline = "dashed")
 \method{plot_pred_vs_resid}{data.frame}(.data, .hline = "dashed")
 }
 \arguments{
-\item{.data}{The output of \code{\link[=calc_pred_vs_resid]{calc_pred_vs_resid()}}.}
+\item{.data}{The output of \code{\link[=calculate_residuals]{calculate_residuals()}}.}
 
 \item{.hline}{(Optional) The \code{linetype} of the line drawn at \code{y = 0}.}
 }
@@ -29,7 +29,7 @@ library(tidytest)
 
 mod_lm_fit <- lm(mpg ~ disp + wt + hp, data = mtcars)
 
-pred_vs_resid_tbl <- calc_pred_vs_resid(mod_lm_fit)
+pred_vs_resid_tbl <- calculate_residuals(mod_lm_fit)
 
 plot_pred_vs_resid(pred_vs_resid_tbl)
 
