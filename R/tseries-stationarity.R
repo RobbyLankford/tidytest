@@ -52,7 +52,7 @@ aug_dickey_fuller_test.lm <- function(object,
                                       alternative = "stationary",
                                       ...,
                                       .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- calc_residuals(object)
 
   aug_dickey_fuller_test_(resids, alternative, ..., .alpha = .alpha)
 }
@@ -63,7 +63,7 @@ aug_dickey_fuller_test._lm <- function(object,
                                        alternative = "stationary",
                                        ...,
                                        .alpha = 0.05) {
-  resids <- get_residuals(object[["fit"]])
+  resids <- calc_residuals(object[["fit"]])
 
   aug_dickey_fuller_test_(resids, alternative, ..., .alpha = .alpha)
 }
@@ -124,7 +124,7 @@ kpss_test <- function(object, null = "Level", ..., .alpha = 0.05) {
 #' @rdname kpss_test
 #' @export
 kpss_test.lm <- function(object, null = "Level", ..., .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- calc_residuals(object)
 
   kpss_test_(resids, null = null, ..., .alpha = .alpha)
 }
@@ -132,7 +132,7 @@ kpss_test.lm <- function(object, null = "Level", ..., .alpha = 0.05) {
 #' @rdname kpss_test
 #' @export
 kpss_test._lm <- function(object, null = "Level", ..., .alpha = 0.05) {
-  resids <- get_residuals(object[["fit"]])
+  resids <- calc_residuals(object[["fit"]])
 
   kpss_test_(resids, null = null, ..., .alpha = .alpha)
 }
@@ -197,7 +197,7 @@ phillips_perron_test.lm <- function(object,
                                     alternative = "stationary",
                                     ...,
                                     .alpha = 0.05) {
-  resids <- get_residuals(object)
+  resids <- calc_residuals(object)
 
   phillips_perron_test_(resids, alternative, ..., .alpha = .alpha)
 }
@@ -208,7 +208,7 @@ phillips_perron_test._lm <- function(object,
                                      alternative = "stationary",
                                      ...,
                                      .alpha = 0.05) {
-  resids <- get_residuals(object[["fit"]])
+  resids <- calc_residuals(object[["fit"]])
 
   phillips_perron_test_(resids, alternative, ..., .alpha = .alpha)
 }
