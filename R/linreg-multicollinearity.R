@@ -30,6 +30,13 @@ identify_multicollinearity._lm <- function(object) {
 
 
 # Helper Functions ------------------------------------------------------------
+check_enough_terms <- function(object) {
+  #> Need at least two terms for VIFs to be calculated
+  coefs <- object[["coefficients"]]
+
+  length(coefs[names(coefs) != "(Intercept)"]) > 1
+}
+
 calculate_vifs <- function(object) {
   car::vif(object)
 }
@@ -55,7 +62,13 @@ finalize_vifs <- function(x) {
   )
 }
 
-identify_multicollinearity_ <- function(object) {
+identify_multicollinearity_ <- function(object, .call = rlang::caller_env()) {
+  if (!check_enough_terms(object)) {
+    cli::cli_abort(c(
+      "Model contains fewer than 2 terms. VIFs cannot be calculated."
+    ), call = .call)
+  }
+
   object %>%
     calculate_vifs() %>%
     format_vifs() %>%
