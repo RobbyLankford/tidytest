@@ -27,6 +27,7 @@ Imports:
     tidyr (>= 1.0.0),
     tseries
 Suggests: 
+    covr,
     parsnip,
     roxygen2,
     testthat (>= 3.0.0),
