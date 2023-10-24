@@ -101,7 +101,7 @@ harvey_collier_test._glm <- function(object, ..., .alpha = 0.05) {
 ramsey_reset_test_ <- function(object, power = 2:3, ..., .alpha = 0.05) {
   tidy_test(
     object,
-    lmtest::resettest,
+    resettest,
     power = power,
     ...,
     .test  = "Ramsey's RESET",
@@ -114,7 +114,7 @@ ramsey_reset_test_ <- function(object, power = 2:3, ..., .alpha = 0.05) {
 harvey_collier_test_ <- function(object, ..., .alpha = 0.05) {
   tidy_test(
     object,
-    lmtest::harvtest,
+    harvtest,
     ...,
     .test  = "Harvey-Collier",
     .null  = "True Relationship is Linear",

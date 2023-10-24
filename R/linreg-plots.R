@@ -31,7 +31,7 @@ calculate_residuals <- function(object, data = NULL) {
 #' @rdname calculate_residuals
 #' @export
 calculate_residuals.lm <- function(object, data = NULL) {
-  if (rlang::is_null(data)) {
+  if (is_null(data)) {
     data <- object[["model"]]
   }
 
@@ -135,26 +135,26 @@ calculate_residuals_ <- function(object, data, yvar) {
   preds_num <- as.numeric(stats::predict(object, data))
   resids_num <- acts_num - preds_num
 
-  dplyr::tibble(
+  tibble(
     .pred = preds_num,
     .resid = resids_num
   )
 }
 
 plot_predictions_vs_residuals_ <- function(.data, .hline) {
-  ggplot2::ggplot(
+  ggplot(
     data = .data,
-    mapping = ggplot2::aes(x = .pred, y = .resid)
+    mapping = aes(x = .pred, y = .resid)
   ) +
-    ggplot2::geom_point() +
-    ggplot2::geom_hline(ggplot2::aes(yintercept = 0), linetype = .hline) +
-    ggplot2::labs(x = "Predictions", y = "Residuals")
+    geom_point() +
+    geom_hline(aes(yintercept = 0), linetype = .hline) +
+    labs(x = "Predictions", y = "Residuals")
 }
 
 plot_qq_normality_ <- function(.data) {
-  ggplot2::ggplot(data = .data, mapping = ggplot2::aes(sample = .resid)) +
-    qqplotr::stat_qq_band() +
-    qqplotr::stat_qq_line() +
-    qqplotr::stat_qq_point() +
-    ggplot2::labs(x = "Theoretical Quantiles", y = "Sample Quantiles")
+  ggplot(data = .data, mapping = aes(sample = .resid)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles")
 }

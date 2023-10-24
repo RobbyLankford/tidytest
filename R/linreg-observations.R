@@ -128,12 +128,12 @@ identify_influential_obs.lm <- function(object, id = NULL, .cutoff = 0.5) {
 
 #> Add an ID column when converting to a tibble
 add_id <- function(x, name, id = NULL) {
-  if (rlang::is_null(id)) {
-    out <- dplyr::tibble({{ name }} := x) %>%
-      dplyr::mutate(id = dplyr::row_number()) %>%
-      dplyr::select(id, {{ name }})
+  if (is_null(id)) {
+    out <- tibble({{ name }} := x) %>%
+      mutate(id = row_number()) %>%
+      select(id, {{ name }})
   } else {
-    out <- dplyr::tibble(id = id, {{ name }} := x)
+    out <- tibble(id = id, {{ name }} := x)
   }
 
   out
@@ -147,8 +147,8 @@ identify_extreme_leverages_ <- function(object, id, .multiplier) {
   cutoff_num <- calc_leverage_cutoff(object, .multiplier)
 
   leverages_tbl %>%
-    dplyr::mutate(.cutoff = cutoff_num) %>%
-    dplyr::filter(leverage > .cutoff)
+    mutate(.cutoff = cutoff_num) %>%
+    filter(leverage > .cutoff)
 }
 
 ##> Calculate leverage of each data point
@@ -181,7 +181,7 @@ identify_outliers_ <- function(object, id, .cutoff) {
   std_residuals_num <- calc_standardized_residuals(object)
   std_residuals_tbl <- format_standardized_residuals(std_residuals_num, id)
 
-  dplyr::filter(std_residuals_tbl, std_resid > .cutoff)
+  filter(std_residuals_tbl, std_resid > .cutoff)
 }
 
 ##> Calculate standardized residuals of each data point
@@ -198,7 +198,7 @@ identify_influential_obs_ <- function(object, id, .cutoff) {
   cooks_dist_num <- calc_cooks_distance(object)
   cooks_dist_tbl <- format_cooks_distance(cooks_dist_num, id)
 
-  dplyr::filter(cooks_dist_tbl, cooks_dist > .cutoff)
+  filter(cooks_dist_tbl, cooks_dist > .cutoff)
 }
 
 ##> Calculate Cook's distance of each data point

@@ -128,7 +128,7 @@ durbin_watson_test_ <- function(object,
                                     .alpha = 0.05) {
   tidy_test(
     object,
-    lmtest::dwtest,
+    dwtest,
     alternative = alternative,
     ...,
     .test  = "Durbin-Watson",
