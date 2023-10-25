@@ -126,7 +126,7 @@ shapiro_wilk_test_vec <- function(x, ..., .alpha = 0.05) {
 anderson_darling_test_ <- function(resids, ..., .alpha = 0.05) {
   tidy_test(
     resids,
-    ad.test,
+    nortest::ad.test,
     ...,
     .test  = "Anderson-Darling",
     .null  = "Follows a Normal Distribution",

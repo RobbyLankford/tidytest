@@ -2,15 +2,15 @@
 tidy_test <- function(x, .f, ..., .test, .null, .alt, .alpha = 0.05) {
   .f(x, ...) %>%
     tidy_results() %>%
-    mutate(
+    dplyr::mutate(
       test    = .test,
       null    = .null,
       alt     = .alt,
-      result  = if_else(p_value > .alpha, "Fail to Reject", "Reject"),
-      outcome = if_else(p_value > .alpha, null, alt),
+      result  = dplyr::if_else(p_value > .alpha, "Fail to Reject", "Reject"),
+      outcome = dplyr::if_else(p_value > .alpha, null, alt),
     ) %>%
-    nest(.notes = c(null, alt, parameters)) %>%
-    select(test, statistic, p_value, result, outcome, .notes)
+    tidyr::nest(.notes = c(null, alt, parameters)) %>%
+    dplyr::select(test, statistic, p_value, result, outcome, .notes)
 }
 
 # Tidy Results to Tibble ------------------------------------------------------
@@ -28,7 +28,7 @@ tidy_results.htest <- function(object, ...) {
     names(parameters) <- "None"
   }
 
-  tibble(
+  dplyr::tibble(
     statistic  = round(statistic, digits = 2),
     p_value    = round(p_value, digits = 3),
     parameters = list(format_parameters(parameters))
@@ -38,6 +38,6 @@ tidy_results.htest <- function(object, ...) {
 # Helper Functions ------------------------------------------------------------
 format_parameters <- function(x) {
   x %>%
-    enframe() %>%
-    pivot_wider()
+    tibble::enframe() %>%
+    tidyr::pivot_wider()
 }

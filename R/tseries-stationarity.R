@@ -230,7 +230,7 @@ aug_dickey_fuller_test_ <- function(resids,
                                     .alpha = 0.05) {
   tidy_test(
     resids,
-    adf.test,
+    tseries::adf.test,
     alternative = alternative,
     ...,
     .test  = "Augmented Dickey-Fuller",
@@ -243,7 +243,7 @@ aug_dickey_fuller_test_ <- function(resids,
 kpss_test_ <- function(resids, null = "Level", ..., .alpha = 0.05) {
   tidy_test(
     resids,
-    kpss.test,
+    tseries::kpss.test,
     null = null,
     ...,
     .test  = "Kwiatkowski-Phillips-Schmidt-Shin",
@@ -259,7 +259,7 @@ phillips_perron_test_ <- function(resids,
                                   .alpha = 0.05) {
   tidy_test(
     resids,
-    pp.test,
+    tseries::pp.test,
     alternative = alternative,
     ...,
     .test   = "Phillips-Perron",

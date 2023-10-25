@@ -38,7 +38,7 @@ check_enough_terms <- function(object) {
 }
 
 calculate_vifs <- function(object) {
-  vif(object)
+  car::vif(object)
 }
 
 format_vifs <- function(x) {
@@ -46,15 +46,15 @@ format_vifs <- function(x) {
 }
 
 finalize_vifs <- function(x) {
-  vifs_tbl <- tibble(
+  vifs_tbl <- dplyr::tibble(
     variable = names(x),
     vif = as.numeric(x)
   )
 
-  mutate(
+  dplyr::mutate(
     vifs_tbl,
 
-    result = case_when(
+    result = dplyr::case_when(
       vif == 1 ~ "not correlated",
       vif > 5  ~ "highly correlated",
       TRUE     ~ "moderately correlated"
@@ -62,9 +62,9 @@ finalize_vifs <- function(x) {
   )
 }
 
-identify_multicollinearity_ <- function(object, .call = caller_env()) {
+identify_multicollinearity_ <- function(object, .call = rlang::caller_env()) {
   if (!check_enough_terms(object)) {
-    cli_abort(c(
+    cli::cli_abort(c(
       "Model contains fewer than 2 terms. VIFs cannot be calculated."
     ), call = .call)
   }

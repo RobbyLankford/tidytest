@@ -61,7 +61,7 @@ calculate_acf_ <- function(x,
 
   col_chr <- if (.type[[1]] == "correlation") "acf" else "pacf"
 
-  tibble(
+  dplyr::tibble(
     lag = as.factor(as.numeric(acfs_lst[["lag"]])),
 
     {{ col_chr }} := as.numeric(acfs_lst[["acf"]]),

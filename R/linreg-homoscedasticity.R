@@ -111,7 +111,7 @@ goldfeld_quandt_test._glm <- function(object,
 bruesch_pagan_test_ <- function(object, ..., .alpha = 0.05) {
   tidy_test(
     object,
-    bptest,
+    lmtest::bptest,
     ...,
     .test  = "Bruesch-Pagan",
     .null  = "Variances Are Equal",
@@ -126,7 +126,7 @@ goldfeld_quandt_test_ <- function(object,
                                       .alpha = 0.05) {
   tidy_test(
     object,
-    gqtest,
+    lmtest::gqtest,
     alternative = alternative,
     ...,
     .test  = "Goldfeld-Quandt",

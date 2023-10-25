@@ -94,26 +94,26 @@ plot_acf_ <- function(.data,
                       .title,
                       .origin_width,
                       .conf_width) {
-  ggplot(
+  ggplot2::ggplot(
     data = .data,
-    mapping = aes(x = lag, y = {{ col }})
+    mapping = ggplot2::aes(x = lag, y = {{ col }})
   ) +
-    geom_col(fill = .color, color = .color) +
-    geom_hline(
-      mapping = aes(yintercept = .conf_lo),
+    ggplot2::geom_col(fill = .color, color = .color) +
+    ggplot2::geom_hline(
+      mapping = ggplot2::aes(yintercept = .conf_lo),
       linetype = "dashed",
       color = .conf_color,
       linewidth = .conf_width
     ) +
-    geom_hline(
-      mapping = aes(yintercept = 0),
+    ggplot2::geom_hline(
+      mapping = ggplot2::aes(yintercept = 0),
       linewidth = .origin_width
     ) +
-    geom_hline(
-      mapping = aes(yintercept = .conf_hi),
+    ggplot2::geom_hline(
+      mapping = ggplot2::aes(yintercept = .conf_hi),
       linetype = "dashed",
       color = .conf_color,
       linewidth = .conf_width
     ) +
-    labs(title = .title)
+    ggplot2::ggtitle(.title)
 }
