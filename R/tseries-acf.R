@@ -36,7 +36,7 @@ calculate_acf <- function(x, .lags = NULL, .conf = 0.95) {
 #' @rdname calculate_acf
 #' @export
 calculate_acf.numeric <- function(x, .lags = NULL, .conf = 0.95) {
-  calculate_acf_(x, .lags = .lags, .conf = .conf, .type = "correlation")
+  calculate_acf_impl(x, .lags = .lags, .conf = .conf, .type = "correlation")
 }
 
 #' @rdname calculate_acf
@@ -48,15 +48,15 @@ calculate_pacf <- function(x, .lags = NULL, .conf = 0.95) {
 #' @rdname calculate_acf
 #' @export
 calculate_pacf.numeric <- function(x, .lags = NULL, .conf = 0.95) {
-  calculate_acf_(x, .lags = .lags, .conf = .conf, .type = "partial")
+  calculate_acf_impl(x, .lags = .lags, .conf = .conf, .type = "partial")
 }
 
 
 # Helper Functions ------------------------------------------------------------
-calculate_acf_ <- function(x,
-                           .lags,
-                           .conf,
-                           .type = c("correlation", "partial")) {
+calculate_acf_impl <- function(x,
+                               .lags,
+                               .conf,
+                               .type = c("correlation", "partial")) {
   acfs_lst <- stats::acf(x, lag.max = .lags, type = .type[[1]], plot = FALSE)
 
   col_chr <- if (.type[[1]] == "correlation") "acf" else "pacf"

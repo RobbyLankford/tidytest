@@ -30,19 +30,19 @@ bruesch_pagan_test <- function(object, ..., .alpha = 0.05) {
 #' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test.lm <- function(object, ..., .alpha = 0.05) {
-  bruesch_pagan_test_(object, ..., .alpha = .alpha)
+  bruesch_pagan_test_impl(object, ..., .alpha = .alpha)
 }
 
 #' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test._lm <- function(object, ..., .alpha = 0.05) {
-  bruesch_pagan_test_(object[["fit"]], ..., .alpha = .alpha)
+  bruesch_pagan_test_impl(object[["fit"]], ..., .alpha = .alpha)
 }
 
 #' @rdname bruesch_pagan_test
 #' @export
 bruesch_pagan_test._glm <- function(object, ..., .alpha = 0.05) {
-  bruesch_pagan_test_(object[["fit"]], ..., .alpha = .alpha)
+  bruesch_pagan_test_impl(object[["fit"]], ..., .alpha = .alpha)
 }
 
 
@@ -85,7 +85,7 @@ goldfeld_quandt_test.lm <- function(object,
                                     alternative = "two.sided",
                                     ...,
                                     .alpha = 0.05) {
-  goldfeld_quandt_test_(object, alternative, ..., .alpha = .alpha)
+  goldfeld_quandt_test_impl(object, alternative, ..., .alpha = .alpha)
 }
 
 #' @rdname goldfeld_quandt_test
@@ -94,7 +94,7 @@ goldfeld_quandt_test._lm <- function(object,
                                      alternative = "two.sided",
                                      ...,
                                      .alpha = 0.05) {
-  goldfeld_quandt_test_(object[["fit"]], alternative, ..., .alpha = .alpha)
+  goldfeld_quandt_test_impl(object[["fit"]], alternative, ..., .alpha = .alpha)
 }
 
 #' @rdname goldfeld_quandt_test
@@ -103,12 +103,12 @@ goldfeld_quandt_test._glm <- function(object,
                                       alternative = "two.sided",
                                       ...,
                                       .alpha = 0.05) {
-  goldfeld_quandt_test_(object[["fit"]], alternative, ..., .alpha = .alpha)
+  goldfeld_quandt_test_impl(object[["fit"]], alternative, ..., .alpha = .alpha)
 }
 
 
 # Helper Functions ------------------------------------------------------------
-bruesch_pagan_test_ <- function(object, ..., .alpha = 0.05) {
+bruesch_pagan_test_impl <- function(object, ..., .alpha = 0.05) {
   tidy_test(
     object,
     lmtest::bptest,
@@ -120,7 +120,7 @@ bruesch_pagan_test_ <- function(object, ..., .alpha = 0.05) {
   )
 }
 
-goldfeld_quandt_test_ <- function(object,
+goldfeld_quandt_test_impl <- function(object,
                                       alternative = "two.sided",
                                       ...,
                                       .alpha = 0.05) {

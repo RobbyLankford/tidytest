@@ -33,19 +33,19 @@ ramsey_reset_test <- function(object, power = 2:3, ..., .alpha = 0.05) {
 #' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test.lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  ramsey_reset_test_(object, power = power, ..., .alpha = .alpha)
+  ramsey_reset_test_impl(object, power = power, ..., .alpha = .alpha)
 }
 
 #' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test._lm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  ramsey_reset_test_(object[["fit"]], power = power, ..., .alpha = .alpha)
+  ramsey_reset_test_impl(object[["fit"]], power = power, ..., .alpha = .alpha)
 }
 
 #' @rdname ramsey_reset_test
 #' @export
 ramsey_reset_test._glm <- function(object, power = 2:3, ..., .alpha = 0.05) {
-  ramsey_reset_test_(object[["fit"]], power = power, ..., .alpha = .alpha)
+  ramsey_reset_test_impl(object[["fit"]], power = power, ..., .alpha = .alpha)
 }
 
 
@@ -81,24 +81,24 @@ harvey_collier_test <- function(object, ..., .alpha = 0.05) {
 #' @rdname harvey_collier_test
 #' @export
 harvey_collier_test.lm <- function(object, ..., .alpha = 0.05) {
-  harvey_collier_test_(object, ..., .alpha = .alpha)
+  harvey_collier_test_impl(object, ..., .alpha = .alpha)
 }
 
 #' @rdname harvey_collier_test
 #' @export
 harvey_collier_test._lm <- function(object, ..., .alpha = 0.05) {
-  harvey_collier_test_(object[["fit"]], ..., .alpha = .alpha)
+  harvey_collier_test_impl(object[["fit"]], ..., .alpha = .alpha)
 }
 
 #' @rdname harvey_collier_test
 #' @export
 harvey_collier_test._glm <- function(object, ..., .alpha = 0.05) {
-  harvey_collier_test_(object[["fit"]], ..., .alpha = .alpha)
+  harvey_collier_test_impl(object[["fit"]], ..., .alpha = .alpha)
 }
 
 
 # Helper Functions ------------------------------------------------------------
-ramsey_reset_test_ <- function(object, power = 2:3, ..., .alpha = 0.05) {
+ramsey_reset_test_impl <- function(object, power = 2:3, ..., .alpha = 0.05) {
   tidy_test(
     object,
     lmtest::resettest,
@@ -111,7 +111,7 @@ ramsey_reset_test_ <- function(object, power = 2:3, ..., .alpha = 0.05) {
   )
 }
 
-harvey_collier_test_ <- function(object, ..., .alpha = 0.05) {
+harvey_collier_test_impl <- function(object, ..., .alpha = 0.05) {
   tidy_test(
     object,
     lmtest::harvtest,

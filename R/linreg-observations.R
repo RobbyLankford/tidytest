@@ -39,7 +39,7 @@ identify_extreme_leverages <- function(object, id = NULL, .multiplier = 3) {
 #' @rdname identify_extreme_leverages
 #' @export
 identify_extreme_leverages.lm <- function(object, id = NULL, .multiplier = 3) {
-  identify_extreme_leverages_(object, id, .multiplier)
+  identify_extreme_leverages_impl(object, id, .multiplier)
 }
 
 
@@ -79,7 +79,7 @@ identify_outliers <- function(object, id = NULL, .cutoff = 3) {
 #' @rdname identify_outliers
 #' @export
 identify_outliers.lm <- function(object, id = NULL, .cutoff = 3) {
-  identify_outliers_(object, id, .cutoff)
+  identify_outliers_impl(object, id, .cutoff)
 }
 
 
@@ -120,7 +120,7 @@ identify_influential_obs <- function(object, id = NULL, .cutoff = 0.5) {
 #' @rdname identify_influential_obs
 #' @export
 identify_influential_obs.lm <- function(object, id = NULL, .cutoff = 0.5) {
-  identify_influential_obs_(object, id, .cutoff)
+  identify_influential_obs_impl(object, id, .cutoff)
 }
 
 
@@ -140,7 +140,7 @@ add_id <- function(x, name, id = NULL) {
 }
 
 ## Leverage -------------------------------------------------------------------
-identify_extreme_leverages_ <- function(object, id, .multiplier) {
+identify_extreme_leverages_impl <- function(object, id, .multiplier) {
   leverages_num <- calc_leverages(object)
   leverages_tbl <- format_leverages(leverages_num, id = id)
 
@@ -177,7 +177,7 @@ calc_leverage_cutoff <- function(object, .multiplier) {
 }
 
 ## Outliers -------------------------------------------------------------------
-identify_outliers_ <- function(object, id, .cutoff) {
+identify_outliers_impl <- function(object, id, .cutoff) {
   std_residuals_num <- calc_standardized_residuals(object)
   std_residuals_tbl <- format_standardized_residuals(std_residuals_num, id)
 
@@ -194,7 +194,7 @@ format_standardized_residuals <- function(x, id) {
 }
 
 ## Influential ----------------------------------------------------------------
-identify_influential_obs_ <- function(object, id, .cutoff) {
+identify_influential_obs_impl <- function(object, id, .cutoff) {
   cooks_dist_num <- calc_cooks_distance(object)
   cooks_dist_tbl <- format_cooks_distance(cooks_dist_num, id)
 

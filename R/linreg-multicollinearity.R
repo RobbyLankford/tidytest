@@ -19,13 +19,13 @@ identify_multicollinearity <- function(object) {
 #' @rdname identify_multicollinearity
 #' @export
 identify_multicollinearity.lm <- function(object) {
-  identify_multicollinearity_(object)
+  identify_multicollinearity_impl(object)
 }
 
 #' @rdname identify_multicollinearity
 #' @export
 identify_multicollinearity._lm <- function(object) {
-  identify_multicollinearity_(object[["fit"]])
+  identify_multicollinearity_impl(object[["fit"]])
 }
 
 
@@ -62,7 +62,8 @@ finalize_vifs <- function(x) {
   )
 }
 
-identify_multicollinearity_ <- function(object, .call = rlang::caller_env()) {
+identify_multicollinearity_impl <- function(object,
+                                            .call = rlang::caller_env()) {
   if (!check_enough_terms(object)) {
     cli::cli_abort(c(
       "Model contains fewer than 2 terms. VIFs cannot be calculated."

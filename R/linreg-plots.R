@@ -41,7 +41,7 @@ calculate_residuals.lm <- function(object, data = NULL) {
 
   yvar_chr <- vars_chr[[idx_num + 1]]
 
-  calculate_residuals_(object, data, yvar_chr)
+  calculate_residuals_impl(object, data, yvar_chr)
 }
 
 
@@ -83,7 +83,7 @@ plot_predictions_vs_residuals <- function(.data, .hline = "dashed") {
 #' @rdname plot_predictions_vs_residuals
 #' @export
 plot_predictions_vs_residuals.data.frame <- function(.data, .hline = "dashed") {
-  plot_predictions_vs_residuals_(.data, .hline = .hline)
+  plot_predictions_vs_residuals_impl(.data, .hline = .hline)
 }
 
 
@@ -125,12 +125,12 @@ plot_qq_normality <- function(.data) {
 #' @rdname plot_qq_normality
 #' @export
 plot_qq_normality.data.frame <- function(.data) {
-  plot_qq_normality_(.data)
+  plot_qq_normality_impl(.data)
 }
 
 
 # Helpers ---------------------------------------------------------------------
-calculate_residuals_ <- function(object, data, yvar) {
+calculate_residuals_impl <- function(object, data, yvar) {
   acts_num <- data[[yvar]]
   preds_num <- as.numeric(stats::predict(object, data))
   resids_num <- acts_num - preds_num
@@ -141,7 +141,7 @@ calculate_residuals_ <- function(object, data, yvar) {
   )
 }
 
-plot_predictions_vs_residuals_ <- function(.data, .hline) {
+plot_predictions_vs_residuals_impl <- function(.data, .hline) {
   ggplot2::ggplot(
     data = .data,
     mapping = ggplot2::aes(x = .pred, y = .resid)
@@ -151,7 +151,7 @@ plot_predictions_vs_residuals_ <- function(.data, .hline) {
     ggplot2::labs(x = "Predictions", y = "Residuals")
 }
 
-plot_qq_normality_ <- function(.data) {
+plot_qq_normality_impl <- function(.data) {
   ggplot2::ggplot(data = .data, mapping = ggplot2::aes(sample = .resid)) +
     qqplotr::stat_qq_band() +
     qqplotr::stat_qq_line() +

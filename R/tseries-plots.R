@@ -46,7 +46,7 @@ plot_acf.data.frame <- function(.data,
                                 .title = "ACF Plot",
                                 .origin_width = 1,
                                 .conf_width = 0.5) {
-  plot_acf_(
+  plot_acf_impl(
     .data, acf,
     .color = .color,
     .conf_color = .conf_color,
@@ -75,7 +75,7 @@ plot_pacf.data.frame <- function(.data,
                                  .title = "PACF Plot",
                                  .origin_width = 1,
                                  .conf_width = 0.5) {
-  plot_acf_(
+  plot_acf_impl(
     .data, pacf,
     .color = .color,
     .conf_color = .conf_color,
@@ -87,13 +87,13 @@ plot_pacf.data.frame <- function(.data,
 
 
 # Helper Functions ------------------------------------------------------------
-plot_acf_ <- function(.data,
-                      col,
-                      .color,
-                      .conf_color,
-                      .title,
-                      .origin_width,
-                      .conf_width) {
+plot_acf_impl <- function(.data,
+                          col,
+                          .color,
+                          .conf_color,
+                          .title,
+                          .origin_width,
+                          .conf_width) {
   ggplot2::ggplot(
     data = .data,
     mapping = ggplot2::aes(x = lag, y = {{ col }})

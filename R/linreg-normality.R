@@ -32,31 +32,29 @@ anderson_darling_test <- function(object, ..., .alpha = 0.05) {
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test.lm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object)
-
-  anderson_darling_test_(resids, ..., .alpha = .alpha)
+  anderson_darling_test_impl(calc_residuals(object), ..., .alpha = .alpha)
 }
 
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._lm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  anderson_darling_test_(resids, ..., .alpha = .alpha)
+  anderson_darling_test_impl(
+    calc_residuals(object[["fit"]]), ..., .alpha = .alpha
+  )
 }
 
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test._glm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  anderson_darling_test_(resids, ..., .alpha = .alpha)
+  anderson_darling_test_impl(
+    calc_residuals(object[["fit"]]), ..., .alpha = .alpha
+  )
 }
 
 #' @rdname anderson_darling_test
 #' @export
 anderson_darling_test_vec <- function(x, ..., .alpha = 0.05) {
-  anderson_darling_test_(x, ..., .alpha = .alpha)
+  anderson_darling_test_impl(x, ..., .alpha = .alpha)
 }
 
 
@@ -94,36 +92,30 @@ shapiro_wilk_test <- function(object, ..., .alpha = 0.05) {
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test.lm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object)
-
-  shapiro_wilk_test_(resids, ..., .alpha = 0.05)
+  shapiro_wilk_test_impl(calc_residuals(object), ..., .alpha = 0.05)
 }
 
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._lm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  shapiro_wilk_test_(resids, ..., .alpha = 0.05)
+  shapiro_wilk_test_impl(calc_residuals(object[["fit"]]), ..., .alpha = 0.05)
 }
 
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test._glm <- function(object, ..., .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  shapiro_wilk_test_(resids, ..., .alpha = 0.05)
+  shapiro_wilk_test_impl(calc_residuals(object[["fit"]]), ..., .alpha = 0.05)
 }
 
 #' @rdname shapiro_wilk_test
 #' @export
 shapiro_wilk_test_vec <- function(x, ..., .alpha = 0.05) {
-  shapiro_wilk_test_(x, ..., .alpha = .alpha)
+  shapiro_wilk_test_impl(x, ..., .alpha = .alpha)
 }
 
 
 # Helper Functions ------------------------------------------------------------
-anderson_darling_test_ <- function(resids, ..., .alpha = 0.05) {
+anderson_darling_test_impl <- function(resids, ..., .alpha = 0.05) {
   tidy_test(
     resids,
     nortest::ad.test,
@@ -135,7 +127,7 @@ anderson_darling_test_ <- function(resids, ..., .alpha = 0.05) {
   )
 }
 
-shapiro_wilk_test_ <- function(resids, ..., .alpha = 0.05) {
+shapiro_wilk_test_impl <- function(resids, ..., .alpha = 0.05) {
   tidy_test(
     resids,
     shapiro.test,

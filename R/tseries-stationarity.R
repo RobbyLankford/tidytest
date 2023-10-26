@@ -52,9 +52,9 @@ aug_dickey_fuller_test.lm <- function(object,
                                       alternative = "stationary",
                                       ...,
                                       .alpha = 0.05) {
-  resids <- calc_residuals(object)
-
-  aug_dickey_fuller_test_(resids, alternative, ..., .alpha = .alpha)
+  aug_dickey_fuller_test_impl(
+    calc_residuals(object), alternative, ..., .alpha = .alpha
+  )
 }
 
 #' @rdname aug_dickey_fuller_test
@@ -63,9 +63,9 @@ aug_dickey_fuller_test._lm <- function(object,
                                        alternative = "stationary",
                                        ...,
                                        .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  aug_dickey_fuller_test_(resids, alternative, ..., .alpha = .alpha)
+  aug_dickey_fuller_test_impl(
+    calc_residuals(object[["fit"]]), alternative, ..., .alpha = .alpha
+  )
 }
 
 #' @rdname aug_dickey_fuller_test
@@ -74,7 +74,7 @@ aug_dickey_fuller_test_vec <- function(x,
                                        alternative = "stationary",
                                        ...,
                                        .alpha = 0.05) {
-  aug_dickey_fuller_test_(x, alternative, ..., .alpha = .alpha)
+  aug_dickey_fuller_test_impl(x, alternative, ..., .alpha = .alpha)
 }
 
 
@@ -124,23 +124,21 @@ kpss_test <- function(object, null = "Level", ..., .alpha = 0.05) {
 #' @rdname kpss_test
 #' @export
 kpss_test.lm <- function(object, null = "Level", ..., .alpha = 0.05) {
-  resids <- calc_residuals(object)
-
-  kpss_test_(resids, null = null, ..., .alpha = .alpha)
+  kpss_test_impl(calc_residuals(object), null = null, ..., .alpha = .alpha)
 }
 
 #' @rdname kpss_test
 #' @export
 kpss_test._lm <- function(object, null = "Level", ..., .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  kpss_test_(resids, null = null, ..., .alpha = .alpha)
+  kpss_test_impl(
+    calc_residuals(object[["fit"]]), null = null, ..., .alpha = .alpha
+  )
 }
 
 #' @rdname kpss_test
 #' @export
 kpss_test_vec <- function(x, null = "Level", ..., .alpha = 0.05) {
-  kpss_test_(x, null = null, ..., .alpha = .alpha)
+  kpss_test_impl(x, null = null, ..., .alpha = .alpha)
 }
 
 
@@ -197,9 +195,9 @@ phillips_perron_test.lm <- function(object,
                                     alternative = "stationary",
                                     ...,
                                     .alpha = 0.05) {
-  resids <- calc_residuals(object)
-
-  phillips_perron_test_(resids, alternative, ..., .alpha = .alpha)
+  phillips_perron_test_impl(
+    calc_residuals(object), alternative, ..., .alpha = .alpha
+  )
 }
 
 #' @rdname phillips_perron_test
@@ -208,9 +206,9 @@ phillips_perron_test._lm <- function(object,
                                      alternative = "stationary",
                                      ...,
                                      .alpha = 0.05) {
-  resids <- calc_residuals(object[["fit"]])
-
-  phillips_perron_test_(resids, alternative, ..., .alpha = .alpha)
+  phillips_perron_test_impl(
+    calc_residuals(object[["fit"]]), alternative, ..., .alpha = .alpha
+  )
 }
 
 #' @rdname phillips_perron_test
@@ -219,15 +217,15 @@ phillips_perron_test_vec <- function(x,
                                      alternative = "stationary",
                                      ...,
                                      .alpha = 0.05) {
-  phillips_perron_test_(x, alternative, ..., .alpha = .alpha)
+  phillips_perron_test_impl(x, alternative, ..., .alpha = .alpha)
 }
 
 
 # Helper Functions ------------------------------------------------------------
-aug_dickey_fuller_test_ <- function(resids,
-                                    alternative = "stationary",
-                                    ...,
-                                    .alpha = 0.05) {
+aug_dickey_fuller_test_impl <- function(resids,
+                                        alternative = "stationary",
+                                        ...,
+                                        .alpha = 0.05) {
   tidy_test(
     resids,
     tseries::adf.test,
@@ -240,7 +238,7 @@ aug_dickey_fuller_test_ <- function(resids,
   )
 }
 
-kpss_test_ <- function(resids, null = "Level", ..., .alpha = 0.05) {
+kpss_test_impl <- function(resids, null = "Level", ..., .alpha = 0.05) {
   tidy_test(
     resids,
     tseries::kpss.test,
@@ -253,10 +251,10 @@ kpss_test_ <- function(resids, null = "Level", ..., .alpha = 0.05) {
   )
 }
 
-phillips_perron_test_ <- function(resids,
-                                  alternative = "stationary",
-                                  ...,
-                                  .alpha = 0.05) {
+phillips_perron_test_impl <- function(resids,
+                                      alternative = "stationary",
+                                      ...,
+                                      .alpha = 0.05) {
   tidy_test(
     resids,
     tseries::pp.test,
