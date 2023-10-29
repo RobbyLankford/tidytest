@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The goal of tidytest is to provide a tidy unified interface to common statistical tests, specifically those used when developing and validating statistical models.
+The goal of the `tidytest` package is to provide a tidy unified interface to common statistical tests, specifically those used when developing and validating statistical models.
 
 ## Installation
 
@@ -36,38 +36,74 @@ devtools::install_github("RobbyLankford/tidytest")
 
 ## Usage
 
+The `tidytest` package is designed to be used with the [`tidymodels`](https://www.tidymodels.org/) ecosystem, particularly the [`parsnip`](https://parsnip.tidymodels.org/) package. Currently, methods exist for the following `parsnip` models:
+
+* [`linear_reg`](https://parsnip.tidymodels.org/reference/linear_reg.html)
+
 ``` r
-library(dplyr)
 library(parsnip)
 library(tidytest)
 
-mod_fit <- parsnip::linear_reg() %>%
-  parsnip::set_engine("lm") %>%
-  parsnip::fit(mpg ~ disp + wt + hp, data = mtcars)
+mod_fit <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(mpg ~ disp + wt + hp, data = mtcars)
 ```
 
-### Linearity
+Tests in the `tidytest` package are designed to require minimal input. For most tests, the model object is the only required input.
+
+### Linear Tests
+
+Tests for linear regression often focus on the behavior of the residuals. The classic assumptions for a linear model are the "LINE" assumptions of the residuals, specifically:
+
+* Linearity
+* Independence
+* Normality
+* Equal Variance
+
+#### Linearity
+
+Currently, the implemented linearity tests are:
+
+* [Ramsey RESET Test](https://www.jstor.org/stable/2984219)
+* [Harvey-Collier Test](https://www.sciencedirect.com/science/article/abs/pii/0304407677900574)
 
 ``` r
 ramsey_reset(mod_fit)
+harvey_collier_test(mod_fit)
 ```
 
-### Independence
+#### Independence
+
+Currently, the implemented independence tests are:
+
+* [Durbin-Watson Test](https://www.jstor.org/stable/2332325)
+* [Ljung-Box Test](https://www.jstor.org/stable/2335207)
 
 ``` r
 durbin_watson_test(mod_fit)
 ljung_box_test(mod_fit)
 ```
 
-### Normality
+#### Normality
+
+Currently, the implemented normality tests are: 
+
+* [Anderson-Darling Test](https://www.jstor.org/stable/2281537)
+* [Shapiro-Wilk Test](https://www.jstor.org/stable/2333709)
 
 ``` r
 anderson_darling_test(mod_fit)
 shapiro_wilk_test(mod_fit)
 ```
 
-### Equal Variance
+#### Equal Variance
+
+Currently, the implemented equal variance (homoscedasticity) tests are:
+
+* [Bruesch-Pagan Test](https://www.jstor.org/stable/1911963)
+* [Goldfeld-Quandt Test](https://www.jstor.org/stable/2282689)
 
 ``` r
 bruesch_pagan_test(mod_fit)
+goldfeld_quandt_test(mod_fit)
 ```
