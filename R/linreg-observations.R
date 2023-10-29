@@ -184,11 +184,6 @@ identify_outliers_impl <- function(object, id, .cutoff) {
   dplyr::filter(std_residuals_tbl, std_resid > .cutoff)
 }
 
-##> Calculate standardized residuals of each data point
-calc_standardized_residuals <- function(object) {
-  as.numeric(stats::rstandard(object))
-}
-
 format_standardized_residuals <- function(x, id) {
   add_id(x, name = "std_resid", id = id)
 }
