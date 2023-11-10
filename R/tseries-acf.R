@@ -58,16 +58,15 @@ calculate_acf_impl <- function(x,
                                .conf,
                                .type = c("correlation", "partial")) {
   acfs_lst <- stats::acf(x, lag.max = .lags, type = .type[[1]], plot = FALSE)
+  col_chr  <- ifelse(.type[[1]] == "correlation", "acf", "pacf")
 
-  col_chr <- if (.type[[1]] == "correlation") "acf" else "pacf"
-
-  dplyr::tibble(
-    lag = as.factor(as.numeric(acfs_lst[["lag"]])),
-
-    {{ col_chr }} := as.numeric(acfs_lst[["acf"]]),
-
-    .conf_lo = calc_conf(.conf, acfs_lst[["n.used"]], .negate = TRUE),
-    .conf_hi = calc_conf(.conf, acfs_lst[["n.used"]])
+  new_tibble(
+    df_list(
+      lag = as.factor(as.numeric(acfs_lst[["lag"]])),
+      {{ col_chr }} := as.numeric(acfs_lst[["acf"]]),
+      .conf_lo = calc_conf(.conf, acfs_lst[["n.used"]], .negate = TRUE),
+      .conf_hi = calc_conf(.conf, acfs_lst[["n.used"]])
+    )
   )
 }
 

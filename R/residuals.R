@@ -31,7 +31,7 @@ calculate_residuals <- function(object, data = NULL) {
 #' @rdname calculate_residuals
 #' @export
 calculate_residuals.lm <- function(object, data = NULL) {
-  if (rlang::is_null(data)) {
+  if (is_null(data)) {
     data <- object[["model"]]
   }
 
@@ -51,10 +51,7 @@ calculate_residuals_impl <- function(object, data, yvar) {
   preds_num <- as.numeric(stats::predict(object, data))
   resids_num <- acts_num - preds_num
 
-  dplyr::tibble(
-    .pred = preds_num,
-    .resid = resids_num
-  )
+  new_tibble(df_list(.pred = preds_num, .resid = resids_num))
 }
 
 

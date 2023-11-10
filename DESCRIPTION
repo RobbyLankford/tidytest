@@ -16,16 +16,15 @@ RoxygenNote: 7.2.3
 Imports: 
     car,
     cli (>= 3.4.0),
-    dplyr (>= 1.0.0),
     ggplot2 (>= 3.4.0),
     lmtest,
-    magrittr,
     nortest,
     qqplotr,
     rlang (>= 0.4.11),
     tibble,
     tidyr (>= 1.0.0),
-    tseries
+    tseries,
+    vctrs (>= 0.6.0)
 Suggests: 
     covr,
     parsnip,

@@ -263,7 +263,7 @@ phillips_perron_test_impl <- function(resids,
     .test   = "Phillips-Perron",
     .null   = "Unit Root",
     .alpha  = .alpha,
-    .alt    = dplyr::if_else(
+    .alt    = ifelse(
       alternative == "stationary",
       "Stationary",
       "Explosive Root"

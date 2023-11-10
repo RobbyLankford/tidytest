@@ -46,32 +46,24 @@ format_vifs <- function(x) {
 }
 
 finalize_vifs <- function(x) {
-  vifs_tbl <- dplyr::tibble(
-    variable = names(x),
-    vif = as.numeric(x)
-  )
+  vifs_tbl <- new_tibble(df_list(variable = names(x), vif = as.numeric(x)))
 
-  dplyr::mutate(
-    vifs_tbl,
+  vifs_tbl$result <- "moderately correlated"
+  vifs_tbl$result[vifs_tbl$vif == 1] <- "not correlated"
+  vifs_tbl$result[vifs_tbl$vif > 5] <- "highly correlated"
 
-    result = dplyr::case_when(
-      vif == 1 ~ "not correlated",
-      vif > 5  ~ "highly correlated",
-      TRUE     ~ "moderately correlated"
-    )
-  )
+  vifs_tbl
 }
 
-identify_multicollinearity_impl <- function(object,
-                                            .call = rlang::caller_env()) {
+identify_multicollinearity_impl <- function(object, .call = caller_env()) {
   if (!check_enough_terms(object)) {
-    cli::cli_abort(c(
+    cli_abort(c(
       "Model contains fewer than 2 terms. VIFs cannot be calculated."
     ), call = .call)
   }
 
-  object %>%
-    calculate_vifs() %>%
-    format_vifs() %>%
-    finalize_vifs()
+  vifs_raw_tbl <- calculate_vifs(object)
+  vifs_fmt_tbl <- format_vifs(vifs_raw_tbl)
+
+  finalize_vifs(vifs_fmt_tbl)
 }
