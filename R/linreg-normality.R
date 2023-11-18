@@ -116,6 +116,8 @@ shapiro_wilk_test_vec <- function(x, ..., .alpha = 0.05) {
 
 # Helper Functions ------------------------------------------------------------
 anderson_darling_test_impl <- function(resids, ..., .alpha = 0.05) {
+  check_installed("nortest", reason = "to use `anderson_darling_test()`")
+
   tidy_test(
     resids,
     nortest::ad.test,

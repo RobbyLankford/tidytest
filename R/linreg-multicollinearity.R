@@ -38,6 +38,8 @@ check_enough_terms <- function(object) {
 }
 
 calculate_vifs <- function(object) {
+  check_installed("car", reason = "to use `identify_multicollinearity()`")
+
   car::vif(object)
 }
 

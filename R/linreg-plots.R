@@ -94,6 +94,8 @@ plot_predictions_vs_residuals_impl <- function(.data, .hline) {
 }
 
 plot_qq_normality_impl <- function(.data) {
+  check_installed("qqplotr", reason = "to use `plot_qq_normality()`")
+
   ggplot2::ggplot(data = .data, mapping = ggplot2::aes(sample = .resid)) +
     qqplotr::stat_qq_band() +
     qqplotr::stat_qq_line() +

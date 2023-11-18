@@ -14,21 +14,21 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
-    car,
     cli (>= 3.4.0),
     ggplot2 (>= 3.4.0),
     lmtest,
-    nortest,
-    qqplotr,
     rlang (>= 0.4.11),
-    tibble,
+    tibble (>= 3.2.0),
     tidyr (>= 1.0.0),
     tseries,
     vctrs (>= 0.6.0)
 Suggests: 
+    car,
     covr,
+    nortest,
     parsnip,
+    qqplotr,
     roxygen2,
     testthat (>= 3.0.0),
-    vdiffr
+    vdiffr (>= 1.0.0)
 Config/testthat/edition: 3
