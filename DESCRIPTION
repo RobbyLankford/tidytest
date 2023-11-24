@@ -19,7 +19,6 @@ Imports:
     lmtest,
     rlang (>= 0.4.11),
     tibble (>= 3.2.0),
-    tidyr (>= 1.0.0),
     tseries,
     vctrs (>= 0.6.0)
 Suggests: 

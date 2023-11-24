@@ -38,7 +38,7 @@ tidy_results.htest <- function(object, ...) {
 
 
 # Helper Functions ------------------------------------------------------------
-format_parameters <- function(x) pivot_wider(enframe(x))
+format_parameters <- function(x) as_tibble_row(x)
 
 add_info_cols <- function(.data, .test, .null, .alt, .alpha) {
   .data$test <- .test

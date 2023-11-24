@@ -5,7 +5,6 @@
 #' @import cli
 #' @import rlang
 #' @import vctrs
-#' @importFrom tibble enframe new_tibble tibble
-#' @importFrom tidyr pivot_wider
+#' @importFrom tibble enframe new_tibble tibble as_tibble_row
 ## usethis namespace: end
 NULL
