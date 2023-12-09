@@ -12,6 +12,10 @@ mod_linreg_fit <- parsnip::linear_reg() %>%
   parsnip::set_engine("lm") %>%
   parsnip::fit(mpg ~ disp + wt + hp, data = mtcars)
 
+mod_linreg2_fit <- parsnip::linear_reg() %>%
+  parsnip::set_engine("glm") %>%
+  parsnip::fit(mpg ~ disp + wt + hp, data = mtcars)
+
 
 # Functions ----
 check_names <- function(.data, .names) {
